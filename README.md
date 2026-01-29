@@ -34,12 +34,12 @@
 |-----------|------|
 | **ダッシュボード** | データ読み込み・サマリー表示 |
 | **前処理** | カラム設定・分析エンジン起動 |
-| **ATLAS** | 統計チャート・時系列分析（8種類のチャート） |
-| **CORE** | ルールベース分類 (AND/OR/NEAR/ADJブール論理) |
-| **MEGA** | テキスト分析 (ワードクラウド, N-gram, TF-IDF) |
-| **Saturn V** | 技術ランドスケープ可視化 (TF-IDF + PCA) |
-| **Explorer** | キーワード分析・共起ネットワーク |
-| **CREW** | 発明者/出願人ネットワーク・Sankey図 |
+| **統計チャート** | 時系列分析・ランキング（8種類のチャート） |
+| **論理分析** | ルールベース分類 (AND/OR/NEAR/ADJブール論理) |
+| **テキスト分析** | ワードクラウド・N-gram・TF-IDF |
+| **技術マップ** | 技術ランドスケープ可視化 (TF-IDF + PCA) |
+| **キーワード** | キーワードトレンド・KWIC検索・共起分析 |
+| **ネットワーク** | 発明者/出願人ネットワーク・Sankey図 |
 | **アドバンスド** | サークルパッキング・高度な可視化 |
 | **エクスポート** | CSV/JSON/HTMLレポート出力 |
 
@@ -59,30 +59,10 @@
 ## 📁 プロジェクト構成
 
 ```
-Apollo/
-├── artemis.html               # メインアプリケーション（単一ファイル）
-├── ARTEMIS_README.md          # このファイル
-├── LICENSE.txt                # MITライセンス
-├── package.json               # Node.js設定
-├── pyproject.toml             # Python設定
-└── tests/
-    └── test_artemis_functions.py  # ユニットテスト
-```
-
-## 🧪 テスト
-
-主要なユーティリティ関数に対するテストが含まれています：
-
-- `tokenize()` - テキストトークン化
-- `extract_ipc()` - IPCコード抽出
-- `parse_ipc_atlas()` - IPC階層解析
-- `truncate_applicant_name()` - 出願人名切り詰め
-- `split_list()` - リスト分割
-- `normalize_status()` - ステータス正規化
-
-```bash
-# テスト実行
-python -m pytest tests/test_artemis_functions.py -v
+artemis/
+├── artemis.html    # メインアプリケーション（単一ファイル）
+├── README.md       # このファイル
+└── LICENSE         # MITライセンス
 ```
 
 ## 📋 動作要件

@@ -6,7 +6,6 @@
 **ARTEMIS**は、PyScript (Pyodide) を活用したブラウザベースの特許分析アプリケーションです。サーバーサイドのPython環境を必要とせず、HTMLファイル単体で動作します。
 
 - **作成者**: Hajime Kumami
-- **バージョン**: 1.0.0
 - **ベースプロジェクト**: [APOLLO](https://github.com/shibayamalicht/apollo-patent-analysis) by しばやま (shibayamalicht)
 
 > ⚠️ **注意**: ARTEMISはAPOLLOの軽量版であり、一部機能（SBERT、EAGLE、NEBULA等）は含まれていません。フル機能が必要な場合は[APOLLO](https://github.com/shibayamalicht/apollo-patent-analysis)をご利用ください。

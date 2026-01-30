@@ -3156,27 +3156,27 @@
         }
         
         function showPage(page) {
-            if (currentPage && currentPage.id !== 'page-' + page) {
-                currentPage.classList.add('fade-out');
-                setTimeout(() => {
-                    currentPage.classList.add('hidden');
-                    currentPage.classList.remove('fade-out');
-                }, 150);
-            }
+            // すべてのページを隠す
+            document.querySelectorAll('.page').forEach(p => {
+                if (p.id !== 'page-' + page) {
+                    p.classList.add('hidden');
+                    p.classList.remove('fade-in', 'fade-out');
+                }
+            });
             
+            // ナビボタンのアクティブ状態をリセット
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            const delay = currentPage && currentPage.id !== 'page-' + page ? 150 : 0;
-            setTimeout(() => {
-                const targetPage = document.getElementById('page-' + page);
-                if (targetPage) {
-                    targetPage.classList.remove('hidden');
-                    targetPage.classList.add('fade-in');
-                    setTimeout(() => targetPage.classList.remove('fade-in'), 300);
-                    currentPage = targetPage;
-                }
-            }, delay);
+            // 対象ページを表示
+            const targetPage = document.getElementById('page-' + page);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('fade-in');
+                setTimeout(() => targetPage.classList.remove('fade-in'), 300);
+                currentPage = targetPage;
+            }
             
+            // 対応するナビボタンをアクティブに
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.getAttribute('onclick')?.includes("'" + page + "'")) {
                     btn.classList.add('active');
@@ -5472,6 +5472,9 @@
         window.drawSunburst = drawSunburst;
         window.drawCirclePacking = drawCirclePacking;
         window.drawBubbleRace = drawBubbleRace;
+        
+        // 初期ページを設定
+        currentPage = document.getElementById('page-home');
     </script>
 
     <script type="py" config='{"packages": ["pandas", "numpy"]}'>

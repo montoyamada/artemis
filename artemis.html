@@ -3684,6 +3684,7 @@
                 layout.plot_bgcolor = 'rgba(0,0,0,0.2)';
                 layout.font = { color: '#e0e1dd', family: 'Meiryo, Segoe UI, sans-serif' };
                 
+                layout.legend = Object.assign({
                     font: { size: 11, color: '#e0e1dd' },
                     bgcolor: 'rgba(0,0,0,0.3)',
                     bordercolor: 'rgba(255,255,255,0.1)',
@@ -3698,6 +3699,7 @@
                     font: { color: '#f1f5f9', size: 12, family: 'Meiryo, sans-serif' }
                 }, layout.hoverlabel || {});
                 
+                const config = {
                     responsive: true,
                     displaylogo: false,
                     modeBarButtonsToRemove: ['lasso2d', 'select2d'],
@@ -3787,13 +3789,13 @@
         
         
         function showStatusMessage(containerId, type, title, detail = '') {
-            const icons = { error: '❁, warning: '⚠, success: '✁, info: 'ℹ };
+            const icons = { error: '❌', warning: '⚠️', success: '✅', info: 'ℹ️' };
             const container = document.getElementById(containerId);
             if (!container) return;
             
             container.innerHTML = `
                 <div class="status-message ${type}">
-                    <span class="status-icon">${icons[type] || 'ℹ}</span>
+                    <span class="status-icon">${icons[type] || 'ℹ️'}</span>
                     <div class="status-content">
                         <div class="status-title">${title}</div>
                         ${detail ? `<div class="status-detail">${detail}</div>` : ''}
@@ -3815,6 +3817,7 @@
                     return;
                 }
                 
+                const width = container.clientWidth || 800;
                 const height = 500;
                 
                 const colorPalettes = {
@@ -3827,6 +3830,7 @@
                 };
                 const palette = colorPalettes[colorScheme] || colorPalettes['viridis'];
                 
+                const svg = d3.select(container)
                     .append('svg')
                     .attr('width', width)
                     .attr('height', height)
@@ -3838,10 +3842,12 @@
                     .attr('transform', `translate(${width/2}, ${height/2})`);
                 
                 const minScore = d3.min(words, d => d.score);
-                
+                const maxScore = d3.max(words, d => d.score);
+                const sizeScale = d3.scaleLinear()
                     .domain([minScore, maxScore])
                     .range([12, 90]);
                 
+                const layout = d3.layout.cloud()
                     .size([width - 10, height - 10])
                     .words(words.map((d, i) => ({
                         text: d.text,
@@ -5413,6 +5419,20 @@
             coreAxisMode.addEventListener('change', syncCoreAxisMode);
             syncCoreAxisMode();
         }
+        
+        // Python (PyScript) からアクセスできるようにwindowに登録
+        window.drawChart = drawChart;
+        window.updateProgress = updateProgress;
+        window.showChartLoading = showChartLoading;
+        window.showStatusMessage = showStatusMessage;
+        window.drawWordCloud = drawWordCloud;
+        window.drawForceNetwork = drawForceNetwork;
+        window.drawAnimatedBarChart = drawAnimatedBarChart;
+        window.drawSankey = drawSankey;
+        window.drawStreamGraph = drawStreamGraph;
+        window.drawDendrogram = drawDendrogram;
+        window.drawChordDiagram = drawChordDiagram;
+        window.drawSunburst = drawSunburst;
     </script>
 
     <script type="py" config='{"packages": ["pandas", "numpy"]}'>
@@ -5467,9 +5487,19 @@ import numpy as np
 # ============================================================
 # PyScript/Pyodide連携
 # ============================================================
-from js import document, console, window, drawChart, updateProgress
+from js import document, console, window
 from pyodide.ffi import create_proxy
 import asyncio
+
+# JavaScript関数への参照（window経由でアクセス）
+def drawChart(divId, dataJson, layoutJson):
+    """Plotly.jsでチャートを描画"""
+    window.drawChart(divId, dataJson, layoutJson)
+
+def updateProgress(message, percent):
+    """進捗バーを更新"""
+    if hasattr(window, 'updateProgress'):
+        window.updateProgress(message, percent)
 
 # ============================================================
 # 遁読み込みの重量パッケージ (scikit-learn, networkx)

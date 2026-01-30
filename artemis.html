@@ -6560,7 +6560,8 @@ def launch_engine(event):
         )
         top_ipc_js = {str(k): int(v) for k, v in top_ipc_preview.items() if k}
         
-        # Top キーワード！EF-IDFスコア        top_keywords_js = {}
+        # Top キーワード（TF-IDFスコア）
+        top_keywords_js = {}
         if g_tfidf_matrix is not None and len(g_feature_names) > 0:
             mean_scores = g_tfidf_matrix.mean(axis=0).A1
             top_indices = mean_scores.argsort()[-15:][::-1]
@@ -7192,7 +7193,8 @@ def draw_atlas(event):
             ChartHelper.draw("atlas-chart", traces, layout)
         
         elif chart_type == 'ipc_applicant':
-            # IPC ÁE出願人 バブルチャート（オリジナルのtab5            exp = dff.explode('applicant_list').explode('ipc_list')
+            # IPC×出願人 バブルチャート
+            exp = dff.explode('applicant_list').explode('ipc_list')
             exp = exp[exp['applicant_list'].notna() & exp['ipc_list'].notna()]
             exp = exp[(exp['applicant_list'] != '') & (exp['ipc_list'] != '')]
             ipc_level = int(document.getElementById('atlas-ipcapp-level').value)
@@ -7201,7 +7203,8 @@ def draw_atlas(event):
             exp = exp.copy()
             exp['ipc_parsed'] = exp['ipc_list'].apply(lambda x: parse_ipc_atlas(x, ipc_level))
             
-            # TOP出願人とTOP IPCを取得            top_apps = exp['applicant_list'].value_counts().head(num_apps).index.tolist()
+            # TOP出願人とTOP IPCを取得
+            top_apps = exp['applicant_list'].value_counts().head(num_apps).index.tolist()
             top_ipcs = exp['ipc_parsed'].value_counts().head(num_ipcs).index.tolist()
             
             exp_filtered = exp[exp['applicant_list'].isin(top_apps) & exp['ipc_parsed'].isin(top_ipcs)]
@@ -7211,7 +7214,8 @@ def draw_atlas(event):
                 return
             
             if has_status:
-                # ステータス別付き - 色をステータスで分め                plot_data = exp_filtered.groupby(['applicant_list', 'ipc_parsed', status_col]).size().reset_index(name='count')
+                # ステータス別付き - 色をステータスで分ける
+                plot_data = exp_filtered.groupby(['applicant_list', 'ipc_parsed', status_col]).size().reset_index(name='count')
                 statuses_in_view = [s for s in status_order if s in plot_data[status_col].unique()]
                 
                 traces = []
@@ -7994,7 +7998,8 @@ def run_saturn(event):
         title_col = g_col_map.get('title', df.columns[0])
         if title_col == '(未選択)': title_col = df.columns[0]
         
-        # EAGLEオプション取得        show_contour = document.getElementById('saturn-contour').checked
+        # EAGLEオプション取得
+        show_contour = document.getElementById('saturn-contour').checked
         show_hull = document.getElementById('saturn-hull').checked
         show_labels = document.getElementById('saturn-labels').checked
         
@@ -8070,7 +8075,8 @@ def run_saturn(event):
             subset = dfs[mask]
             subset_idx = np.where(mask)[0]
             
-            # ホバーテキスト（常時表示ではなく、バ時み            hover_texts = []
+            # ホバーテキスト（ホバー時のみ表示）
+            hover_texts = []
             for i in subset_idx:
                 title = str(dfs.iloc[i].get(title_col, ''))[:40]
                 apps = dfs.iloc[i].get('applicant_list', [])
@@ -8104,7 +8110,8 @@ def run_saturn(event):
                 center_x.append(float(cx))
                 center_y.append(float(cy))
                 
-                # クラスタの主要キーワードを取得                cluster_indices = np.where(mask)[0]
+                # クラスタの主要キーワードを取得
+                cluster_indices = np.where(mask)[0]
                 cluster_tfidf = g_tfidf_matrix[idx[cluster_indices]].mean(axis=0).A1
                 top_idx = np.argsort(cluster_tfidf)[::-1][:2]
                 top_kw = ', '.join([g_feature_names[i] for i in top_idx])
@@ -8320,7 +8327,8 @@ def show_emerging(event):
         document.getElementById('emerging-chart').innerHTML = '<div class="status-warn">データが不足していす（期間を調整してください</div>'
         return
     
-    # 年間キーワード頻度を計算    old_indices = df_old.index.tolist()
+    # 年間キーワード頻度を計算
+    old_indices = df_old.index.tolist()
     new_indices = df_new.index.tolist()
     
     # インデックスをソーティング
@@ -8381,7 +8389,8 @@ def kwic_search(event):
     
     df = g_df_processed
     
-    # 検索対象列を決定    target_col = None
+    # 検索対象列を決定
+    target_col = None
     target_cols = {
         'title': ['発明名称', 'title', 'Title', '名称'],
         'abstract': ['要約', 'abstract', 'Abstract', '概要'],
@@ -8498,9 +8507,10 @@ def build_network(event):
             document.getElementById('network-status').innerHTML = '<div class="status-warn">ノードがありません。最小エッジ重みを下げてください</div>'
             return
         
-        # ノド数制限        max_nodes = int(document.getElementById('network-max-nodes').value)
+        # ノード数制限
+        max_nodes = int(document.getElementById('network-max-nodes').value)
         if len(G.nodes()) > max_nodes:
-            # 次数上位ノドみを残す
+            # 次数上位ノードのみを残す
             degrees_all = dict(G.degree())
             top_nodes_list = sorted(degrees_all.items(), key=lambda x: -x[1])[:max_nodes]
             keep_nodes = set([n for n, _ in top_nodes_list])
@@ -8508,7 +8518,8 @@ def build_network(event):
         
         pos = nx.spring_layout(G, k=2/np.sqrt(len(G.nodes())), iterations=50, seed=42)
         
-        # 中要持を選択        centrality_type = document.getElementById('network-centrality').value
+        # 中心性を選択
+        centrality_type = document.getElementById('network-centrality').value
         
         if centrality_type == 'betweenness':
             centrality = nx.betweenness_centrality(G)
@@ -8584,29 +8595,34 @@ def build_network(event):
 # MEGA - ワードクラウド！E3-cloud使用# =====================================================
 def show_wordcloud(event):
     """
-    d3-cloudを使用した本格色ワードクラウドを生する、    TF-IDFスコアに基づい単語サイズと配置を決定、    """
+    d3-cloudを使用した本格的なワードクラウドを生成する。
+    TF-IDFスコアに基づいて単語サイズと配置を決定。
+    """
     global g_tfidf_matrix, g_feature_names
     if g_tfidf_matrix is None:
-        document.getElementById('wordcloud-chart').innerHTML = '<div class="status-warn">先にTF-IDF分を実行してください</div>'
+        document.getElementById('wordcloud-chart').innerHTML = '<div class="status-warn">先にTF-IDF分析を実行してください</div>'
         return
     
     max_words = int(document.getElementById('wc-max-words').value)
     colorscheme = document.getElementById('wc-colorscheme').value
     
-    # TF-IDFスコアの合計を計算    sums = np.array(g_tfidf_matrix.sum(axis=0)).flatten()
+    # TF-IDFスコアの合計を計算
+    sums = np.array(g_tfidf_matrix.sum(axis=0)).flatten()
     top_indices = np.argsort(sums)[::-1][:max_words]
     
-    # 単語データを準備3-cloud用    word_data = []
+    # 単語データを準備（d3-cloud用）
+    word_data = []
     for i in top_indices:
         word_data.append({
             "text": g_feature_names[i],
             "score": float(sums[i])
         })
     
-    # JavaScript側のdrawWordCloud関数を呼び出い    window.drawWordCloud("wordcloud-chart", json.dumps(word_data), colorscheme)
+    # JavaScript側のdrawWordCloud関数を呼び出す
+    window.drawWordCloud("wordcloud-chart", json.dumps(word_data), colorscheme)
 
 # =====================================================
-# MEGA - N-gram分
+# MEGA - N-gram分析
 # =====================================================
 def show_ngram(event):
     global g_df_processed
@@ -8659,7 +8675,8 @@ def show_cooccurrence(event):
     top_words = [g_feature_names[i] for i in top_indices]
     top_words_set = set(top_words)
     
-    # 共起カウント    cooccur = Counter()
+    # 共起カウント
+    cooccur = Counter()
     for tokens in df['tokenized'].dropna():
         words = [w for w in tokens.split() if w in top_words_set]
         words = list(set(words))
@@ -8669,7 +8686,8 @@ def show_cooccurrence(event):
                     pair = tuple(sorted([words[i], words[j]]))
                     cooccur[pair] += 1
     
-    # ネットワーク構篁    G = nx.Graph()
+    # ネットワーク構築
+    G = nx.Graph()
     for (w1, w2), cnt in cooccur.items():
         if cnt >= min_cooccur:
             G.add_edge(w1, w2, weight=cnt)
@@ -8730,7 +8748,8 @@ def show_sankey(event):
     
     df = g_df_processed.copy()
     
-    # 出願人とIPC/FIの雁！EPCがなければFIを使用    rows = []
+    # 出願人とIPC/FIの集計（IPCがなければFIを使用）
+    rows = []
     for _, row in df.iterrows():
         apps = row.get('applicant_list', [])
         # IPCを優先、なければFIを使用
@@ -8806,7 +8825,8 @@ def show_bubble_race(event=None):
     
     df = g_df_processed.copy()
     
-    # year列が0め損データを除夁    df = df[df['year'] > 0].copy()
+    # year列が0の欠損データを除外
+    df = df[df['year'] > 0].copy()
     
     if len(df) == 0:
         document.getElementById('race-chart').innerHTML = '<div class="status-warn">年データがありません</div>'
@@ -8822,12 +8842,14 @@ def show_bubble_race(event=None):
         document.getElementById('race-chart').innerHTML = '<div class="status-warn">出願人データがありません</div>'
         return
     
-    # 年ごと・出願人ごとの件数雁    year_app_counts = exp.groupby(['year', 'applicant_list']).size().reset_index(name='count')
+    # 年ごと・出願人ごとの件数集計
+    year_app_counts = exp.groupby(['year', 'applicant_list']).size().reset_index(name='count')
     
     # チチ
     debugLog(f"[BubbleRace] Total records: {len(year_app_counts)}, Years: {exp['year'].nunique()}, Applicants: {exp['applicant_list'].nunique()}")
     
-    # 年ごとのデータを構篁    year_data = {}
+    # 年ごとのデータを構築
+    year_data = {}
     for _, row in year_app_counts.iterrows():
         year_int = int(row['year'])
         if year_int not in year_data:
@@ -8892,7 +8914,8 @@ def show_circle_packing(event):
         parent_col = 'year'
         child_col = 'applicant_list'
     
-    # データ雁    hierarchy_data = {}
+    # データ集計
+    hierarchy_data = {}
     for _, row in df.iterrows():
         if parent_col == 'year':
             parents = [str(row.get('year', ''))]
@@ -8917,10 +8940,12 @@ def show_circle_packing(event):
                     continue
                 hierarchy_data[parent][child] = hierarchy_data[parent].get(child, 0) + 1
     
-    # 上位親を選択    parent_totals = {p: sum(c.values()) for p, c in hierarchy_data.items()}
+    # 上位親を選択
+    parent_totals = {p: sum(c.values()) for p, c in hierarchy_data.items()}
     top_parents = sorted(parent_totals.items(), key=lambda x: x[1], reverse=True)[:n_count]
     
-    # 階層データ構造を構篁    children_list = []
+    # 階層データ構造を構築
+    children_list = []
     for parent, total in top_parents:
         child_items = hierarchy_data.get(parent, {})
         # 上位子要素
@@ -8935,7 +8960,8 @@ def show_circle_packing(event):
         "children": children_list
     }
     
-    # 案件リスト表示用のデータを構篁    patent_data = {}
+    # 案件リスト表示用のデータを構築
+    patent_data = {}
     app_col = g_col_map.get('applicant')
     title_col = g_col_map.get('title')
     appno_col = g_col_map.get('app_number')
@@ -9070,7 +9096,8 @@ def show_strategy_matrix(event):
     base_year = int(document.getElementById('strategy-base-year').value)
     size_mode = document.getElementById('strategy-size').value
     
-    # 出願人ごとの年別件数を集訁    exp = df.explode('applicant_list')
+    # 出願人ごとの年別件数を集計
+    exp = df.explode('applicant_list')
     exp = exp[exp['applicant_list'].notna() & (exp['applicant_list'] != '')]
     
     # TOP出願人を抽出
@@ -9080,7 +9107,8 @@ def show_strategy_matrix(event):
     # 年別件数
     yearly = exp.groupby(['applicant_list', 'year']).size().reset_index(name='count')
     
-    # 企業のCAGRとシェアを計算    results = []
+    # 企業のCAGRとシェアを計算
+    results = []
     total_count = len(df)
     max_year = int(df['year'].max())
     
@@ -9090,12 +9118,14 @@ def show_strategy_matrix(event):
         # 総件数
         total = int(app_data['count'].sum())
         
-        # シェア        share = (total / total_count) * 100
+        # シェア
+        share = (total / total_count) * 100
         
         # 直近3年件数
         recent = app_data[app_data['year'] >= max_year - 2]['count'].sum()
         
-        # CAGR計算！Ease_year以剁Evs 以降！        old_period = app_data[app_data['year'] < base_year]['count'].sum()
+        # CAGR計算（base_year以前 vs 以降）
+        old_period = app_data[app_data['year'] < base_year]['count'].sum()
         new_period = app_data[app_data['year'] >= base_year]['count'].sum()
         
         if old_period > 0:
@@ -9103,10 +9133,12 @@ def show_strategy_matrix(event):
             if years_diff > 0 and new_period > 0:
                 cagr = ((new_period / old_period) ** (1 / years_diff) - 1) * 100
             else:
-                cagr = -50  # 減封        else:
+                cagr = -50  # 減少
+        else:
             cagr = 100 if new_period > 0 else 0  # 新規参入
         
-        # CAGR めE100、E00に制限        cagr = max(-100, min(200, cagr))
+        # CAGRを-100～200に制限
+        cagr = max(-100, min(200, cagr))
         
         results.append({
             'name': app,
@@ -9497,7 +9529,8 @@ def show_streamgraph(event):
             year_mask = df['year'] == year
             row = {"year": int(year)}
             
-            # そ年のドキュメントTF-IDF値を集訁            year_indices = df[year_mask].index.tolist()
+            # その年のドキュメントTF-IDF値を集計
+            year_indices = df[year_mask].index.tolist()
             if len(year_indices) > 0:
                 # tokenizedカラムでキーワード出現をカウント                for kw in top_items:
                     count = 0
@@ -9653,7 +9686,8 @@ def generate_report(event):
     
     df = g_df_processed
     
-    # 基本統訁    total = len(df)
+    # 基本統計
+    total = len(df)
     year_min = int(df['year'].min()) if df['year'].min() > 0 else '不'
     year_max = int(df['year'].max()) if df['year'].max() > 0 else '不'
     

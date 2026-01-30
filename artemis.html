@@ -3558,8 +3558,8 @@
                     colorBox.style.cssText = `width: 10px; height: 10px; border-radius: 2px; background: ${colors[i]}; flex-shrink: 0;`;
                     
                     const label = document.createElement('span');
-                    label.style.cssText = 'color: #9fb3c8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;';
-                    const shortName = d.name.length > 12 ? d.name.slice(0, 12) + '…' : d.name;
+                    label.style.cssText = 'color: #9fb3c8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; flex: 1;';
+                    const shortName = d.name.length > 25 ? d.name.slice(0, 25) + '…' : d.name;
                     label.textContent = shortName;
                     label.title = d.name;
                     
@@ -3832,8 +3832,28 @@
                 const data = JSON.parse(dataJson);
                 const layout = JSON.parse(layoutJson);
                 
-                layout.plot_bgcolor = 'rgba(0,0,0,0.2)';
+                // ダークテーマ設定
+                layout.template = 'plotly_dark';
+                layout.paper_bgcolor = layout.paper_bgcolor || 'rgba(0,0,0,0)';
+                layout.plot_bgcolor = layout.plot_bgcolor || 'rgba(0,0,0,0)';
                 layout.font = { color: '#e0e1dd', family: 'Meiryo, Segoe UI, sans-serif' };
+                
+                // タイトルの色を明示的に設定
+                if (layout.title && typeof layout.title === 'string') {
+                    layout.title = { text: layout.title, font: { color: '#e0e1dd' } };
+                }
+                
+                // 軸ラベルの色を設定
+                if (layout.xaxis) {
+                    layout.xaxis.tickfont = layout.xaxis.tickfont || { color: '#e0e1dd' };
+                    layout.xaxis.titlefont = layout.xaxis.titlefont || { color: '#e0e1dd' };
+                    layout.xaxis.color = '#e0e1dd';
+                }
+                if (layout.yaxis) {
+                    layout.yaxis.tickfont = layout.yaxis.tickfont || { color: '#e0e1dd' };
+                    layout.yaxis.titlefont = layout.yaxis.titlefont || { color: '#e0e1dd' };
+                    layout.yaxis.color = '#e0e1dd';
+                }
                 
                 layout.legend = Object.assign({
                     font: { size: 11, color: '#e0e1dd' },
@@ -4766,6 +4786,10 @@
                 
                 debugLog(`[drawBubbleRace] Ready with ${years.length} years of data`);
                 
+                // 初期化完了後、自動的に再生を開始
+                setTimeout(function() {
+                    window._bubbleRacePlayInternal();
+                }, 300);
                 
             } catch(e) {
                 console.error('BubbleRace error:', e);
@@ -7127,7 +7151,7 @@ def draw_atlas(event):
                         x=[int(x) for x in years_full],
                         y=[int(y) for y in sub.values],
                         name=str(status),
-                        color=status_colors.get(str(status), "#888")
+                        color=status_colors.get(str(status), "#4fc3f7")
                     ))
                 layout = ChartHelper.create_stacked_bar_layout(
                     title=f"出願件数推移 ({start}-{end}) - ステータス別",
@@ -7171,7 +7195,7 @@ def draw_atlas(event):
                             x=[int(x) for x in years_full],
                             y=[int(y) for y in sub.values],
                             name=str(status),
-                            color=status_colors.get(str(status), "#888")
+                            color=status_colors.get(str(status), "#4fc3f7")
                         )
                         trace["stackgroup"] = "one"  # 積み上げ面用
                         traces.append(trace)
@@ -7271,7 +7295,7 @@ def draw_atlas(event):
                         x=[int(x) for x in sub_sorted['count']],
                         y=display_names,
                         name=str(status),
-                        color=status_colors.get(str(status), "#888"),
+                        color=status_colors.get(str(status), "#4fc3f7"),
                         orientation="h"
                     )
                     trace["customdata"] = top_applicants
@@ -7339,7 +7363,7 @@ def draw_atlas(event):
                         x=[int(x) for x in sub_sorted['count']],
                         y=sub_sorted['ipc_parsed'].tolist(),
                         name=str(status),
-                        color=status_colors.get(str(status), "#888"),
+                        color=status_colors.get(str(status), "#4fc3f7"),
                         orientation="h"
                     ))
                 layout = ChartHelper.create_horizontal_bar_layout(
@@ -7398,7 +7422,7 @@ def draw_atlas(event):
                         "type": "scatter",
                         "mode": "markers",
                         "name": str(status),
-                        "marker": {"size": 10, "color": status_colors.get(str(status), "#888")},
+                        "marker": {"size": 10, "color": status_colors.get(str(status), "#4fc3f7")},
                         "showlegend": True
                     })
                 
@@ -7430,7 +7454,8 @@ def draw_atlas(event):
                         cell_df = plot_data[(plot_data['applicant_list'] == app) & (plot_data['year'] == year)]
                         if not cell_df.empty:
                             total = cell_df['count'].sum()
-                            scale_factor = (total / max_total) ** 0.5
+                            # 最小サイズを0.3に設定して視認性を確保
+                            scale_factor = max(0.3, (total / max_total) ** 0.5)
                             y_center = (1.0 - y_margin_t) - (i * cell_h) - (cell_h / 2)
                             x_center = x_margin_l + (j * cell_w) + (cell_w / 2)
                             d_w = cell_w * scale_factor
@@ -7440,24 +7465,33 @@ def draw_atlas(event):
                             y1 = y_center + (scale_factor * cell_h / 2)
                             labels = cell_df[status_col].astype(str).tolist()
                             values = cell_df['count'].tolist()
-                            colors = [status_colors.get(l, '#ccc') for l in labels]
+                            colors = [status_colors.get(l, '#4fc3f7') for l in labels]
                             traces.append({
                                 "type": "pie",
                                 "labels": labels,
                                 "values": values,
-                                "marker": {"colors": colors},
+                                "marker": {
+                                    "colors": colors, 
+                                    "line": {"color": "rgba(30,41,59,0.8)", "width": 1}
+                                },
                                 "domain": {"x": [x0, x1], "y": [y0, y1]},
                                 "showlegend": False,
                                 "textinfo": "none",
+                                "textposition": "none",
                                 "hoverinfo": "label+value",
-                                "sort": False
+                                "sort": False,
+                                "hole": 0,
+                                "pull": 0,
+                                "opacity": 1
                             })
                 
                 layout = {
                     "title": "出願人×年 バブル ステータス別",
                     "height": max(700, n_rows * 50),
                     "showlegend": True,
-                    "legend": {"orientation": "h", "y": -0.25, "x": 0, "xanchor": "left"},
+                    "legend": {"orientation": "h", "y": -0.15, "x": 0.5, "xanchor": "center"},
+                    "paper_bgcolor": "rgba(0,0,0,0)",
+                    "plot_bgcolor": "rgba(0,0,0,0)",
                     "xaxis": {
                         "visible": True,
                         "domain": [x_margin_l, 1.0 - x_margin_r],
@@ -7479,7 +7513,7 @@ def draw_atlas(event):
                         "ticktext": top_apps[::-1],
                         "fixedrange": True,
                         "showgrid": True,
-                        "gridcolor": "#eee",
+                        "gridcolor": "rgba(255,255,255,0.15)",
                         "zeroline": False,
                         "showline": False
                     },
@@ -7647,7 +7681,7 @@ def draw_atlas(event):
                             "name": str(status),
                             "marker": {
                                 "size": [max(10, int(c) * 2.5) for c in sub['count']],
-                                "color": status_colors.get(str(status), "#888"),
+                                "color": status_colors.get(str(status), "#4fc3f7"),
                                 "opacity": 0.75,
                                 "line": {"width": 1, "color": "#fff"}
                             },
@@ -8551,7 +8585,8 @@ def run_saturn(event):
         )
         ChartHelper.draw("saturn-chart", traces, layout)
         
-        html = '<h4 style="margin-top: 0.5rem;">クラスタサマリー</h4><table class="data-table"><tr><th>クラスタ</th><th>件数</th><th>主要キーワード</th></tr>'
+        import html as html_module
+        summary_html = '<h4 style="margin-top: 0.5rem;">クラスタサマリー</h4><table class="data-table"><tr><th>クラスタ</th><th>件数</th><th>主要キーワード</th></tr>'
         for k in range(n_clusters):
             mask = dfs['cluster'] == k
             cnt = int(mask.sum())
@@ -8559,10 +8594,10 @@ def run_saturn(event):
                 cluster_indices = np.where(mask)[0]
                 cluster_tfidf = g_tfidf_matrix[idx[cluster_indices]].mean(axis=0).A1
                 top_indices = np.argsort(cluster_tfidf)[::-1][:5]
-                top_words = ', '.join([html.escape(str(g_feature_names[i])) for i in top_indices])
-                html += f'<tr><td style="color:{COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]}; font-weight:bold;">C{k+1}</td><td>{cnt}</td><td style="font-size:0.75rem;">{top_words}</td></tr>'
-        html += '</table>'
-        document.getElementById('saturn-summary').innerHTML = html
+                top_words = ', '.join([html_module.escape(str(g_feature_names[i])) for i in top_indices])
+                summary_html += f'<tr><td style="color:{COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]}; font-weight:bold;">C{k+1}</td><td>{cnt}</td><td style="font-size:0.75rem;">{top_words}</td></tr>'
+        summary_html += '</table>'
+        document.getElementById('saturn-summary').innerHTML = summary_html
         UIHelper.show_success('saturn-status', '分析完了', f'{n_clusters}クラスタを検出しました')
         
     except Exception as e:
@@ -8869,7 +8904,7 @@ def kwic_search(event):
         document.getElementById('kwic-result').innerHTML = f'<div class="status-warn">「{html.escape(keyword)}」が見つかりませんでした</div>'
         return
     
-    html = f'''
+    result_html = f'''
         <div style="margin-bottom: 0.5rem; color: #4fc3f7;">
             <strong>検索結果: {len(results)}件</strong>（最大100件表示）</div>
         <table class="data-table" style="font-size: 0.85rem;">
@@ -8877,10 +8912,10 @@ def kwic_search(event):
     '''
     
     for r in results:
-        html += f'<tr><td>{html.escape(r["doc_id"])}</td><td>{html.escape(r["applicant"])}</td><td style="text-align:left;">{r["context"]}</td></tr>'
+        result_html += f'<tr><td>{html.escape(r["doc_id"])}</td><td>{html.escape(r["applicant"])}</td><td style="text-align:left;">{r["context"]}</td></tr>'
     
-    html += '</table>'
-    document.getElementById('kwic-result').innerHTML = html
+    result_html += '</table>'
+    document.getElementById('kwic-result').innerHTML = result_html
 
 # =====================================================
 # CREW - ネットワーク分析
@@ -8985,7 +9020,7 @@ def build_network(event):
         # D3.jsでインタラクティブなネットワークを描画
         window.drawForceNetwork("network-chart", json.dumps(nodes_data), json.dumps(links_data), title)
         
-        html = f'''
+        stats_html = f'''
             <div class="metrics">
                 <div class="metric"><div class="metric-value">{len(G.nodes())}</div><div class="metric-label">ノード数</div></div>
                 <div class="metric"><div class="metric-value">{len(G.edges())}</div><div class="metric-label">エッジ数</div></div>
@@ -8998,9 +9033,9 @@ def build_network(event):
         '''
         top_nodes = sorted(centrality.items(), key=lambda x: -x[1])[:10]
         for node, cent in top_nodes:
-            html += f'<tr><td>{html.escape(str(node)[:30])}</td><td>{degrees[node]}</td><td>{cent:.3f}</td></tr>'
-        html += '</table>'
-        document.getElementById('network-stats').innerHTML = html
+            stats_html += f'<tr><td>{html.escape(str(node)[:30])}</td><td>{degrees[node]}</td><td>{cent:.3f}</td></tr>'
+        stats_html += '</table>'
+        document.getElementById('network-stats').innerHTML = stats_html
         document.getElementById('network-status').innerHTML = '<span class="status-ok">✅ 完了</span>'
         
     except Exception as e:
@@ -9648,7 +9683,7 @@ def show_strategy_matrix(event):
     ChartHelper.draw("strategy-chart", traces, layout)
     
     # サマリー
-    html = '<h4>ポジション分析</h4><table class="data-table"><tr><th>出願人</th><th>シェア</th><th>成長率</th><th>ポジション</th></tr>'
+    summary_html = '<h4>ポジション分析</h4><table class="data-table"><tr><th>出願人</th><th>シェア</th><th>成長率</th><th>ポジション</th></tr>'
     for r in results:
         if r['cagr'] > 0 and r['share'] > med_share:
             pos = '⭁Eスター'
@@ -9658,9 +9693,9 @@ def show_strategy_matrix(event):
             pos = '💰 金なる木'
         else:
             pos = '🐕 負け犬'
-        html += f'<tr><td>{html.escape(truncate_applicant_name(r["name"], 25))}</td><td>{r["share"]:.1f}%</td><td>{r["cagr"]:+.1f}%</td><td>{pos}</td></tr>'
-    html += '</table>'
-    document.getElementById('strategy-summary').innerHTML = html
+        summary_html += f'<tr><td>{html.escape(truncate_applicant_name(r["name"], 25))}</td><td>{r["share"]:.1f}%</td><td>{r["cagr"]:+.1f}%</td><td>{pos}</td></tr>'
+    summary_html += '</table>'
+    document.getElementById('strategy-summary').innerHTML = summary_html
 
 # =====================================================
 # ツリーマップ

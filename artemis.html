@@ -2807,6 +2807,8 @@
                         if (status) status.textContent = `パッケージ読み込み中... (${timeStr})`;
                     }, 1000);
                     
+                    // Python側のパッケージロード関数を呼び出す
+                    await window.pyLoadHeavyPackages();
                     
                 } else {
                     debugLog('[Heavy] Python function not ready, retrying... count:', window.__heavyRetryCount);

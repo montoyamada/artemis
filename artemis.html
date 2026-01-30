@@ -3334,7 +3334,7 @@
                 .duration(800)
                 .attr('opacity', 1);
             
-            g.selectAll('.sparkline-dot')
+            svg.selectAll('.sparkline-dot')
                 .data(data)
                 .enter()
                 .append('circle')
@@ -3421,7 +3421,7 @@
                     .attr('d', arc);
             });
             
-            g.append('text')
+            svg.append('text')
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.1em')
                 .attr('fill', '#e0e6ed')

@@ -2917,11 +2917,61 @@
             if (!window.Papa) return;
             const input = document.getElementById('file-input');
             if (!input) return;
-            input.addEventListener('change', (e) => {
+            input.addEventListener('change', async (e) => {
                 if (window.__pyReady) return;
                 const file = e.target.files && e.target.files[0];
                 if (!file) return;
-                Papa.parse(file, {
+                
+                // Read file as ArrayBuffer to detect encoding
+                const arrayBuffer = await file.arrayBuffer();
+                const bytes = new Uint8Array(arrayBuffer);
+                
+                let text = null;
+                let encoding = 'utf-8';
+                
+                // Check for UTF-16 LE BOM (FF FE)
+                if (bytes.length >= 2 && bytes[0] === 0xFF && bytes[1] === 0xFE) {
+                    encoding = 'utf-16le';
+                    const decoder = new TextDecoder('utf-16le');
+                    text = decoder.decode(arrayBuffer);
+                }
+                // Check for UTF-16 BE BOM (FE FF)
+                else if (bytes.length >= 2 && bytes[0] === 0xFE && bytes[1] === 0xFF) {
+                    encoding = 'utf-16be';
+                    const decoder = new TextDecoder('utf-16be');
+                    text = decoder.decode(arrayBuffer);
+                }
+                // Check for UTF-8 BOM (EF BB BF)
+                else if (bytes.length >= 3 && bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+                    encoding = 'utf-8';
+                    const decoder = new TextDecoder('utf-8');
+                    text = decoder.decode(arrayBuffer);
+                }
+                // Check for null bytes pattern (likely UTF-16 LE without BOM)
+                else if (bytes.length >= 4 && (bytes[1] === 0 || bytes[3] === 0)) {
+                    encoding = 'utf-16le';
+                    const decoder = new TextDecoder('utf-16le');
+                    text = decoder.decode(arrayBuffer);
+                }
+                // Default: try UTF-8, then Shift-JIS
+                else {
+                    try {
+                        const decoder = new TextDecoder('utf-8', { fatal: true });
+                        text = decoder.decode(arrayBuffer);
+                    } catch {
+                        try {
+                            const decoder = new TextDecoder('shift_jis');
+                            text = decoder.decode(arrayBuffer);
+                            encoding = 'shift_jis';
+                        } catch {
+                            // Fallback to UTF-8 without fatal
+                            const decoder = new TextDecoder('utf-8');
+                            text = decoder.decode(arrayBuffer);
+                        }
+                    }
+                }
+                
+                Papa.parse(text, {
                     header: true,
                     skipEmptyLines: true,
                     complete: (res) => {
@@ -6699,16 +6749,55 @@ async def on_file_change(event):
         return
     
     file = files.item(0)
-    content = await file.text()
+    
+    # Read file as ArrayBuffer to detect encoding
+    from js import Uint8Array
+    array_buffer = await file.arrayBuffer()
+    byte_array = Uint8Array.new(array_buffer)
+    raw_bytes = bytes(byte_array)
+    
+    # Detect encoding based on BOM or content patterns
+    content = None
+    detected_encoding = None
+    
+    # Check for UTF-16 LE BOM (FF FE)
+    if len(raw_bytes) >= 2 and raw_bytes[0] == 0xFF and raw_bytes[1] == 0xFE:
+        content = raw_bytes.decode('utf-16-le')
+        detected_encoding = 'utf-16-le'
+    # Check for UTF-16 BE BOM (FE FF)
+    elif len(raw_bytes) >= 2 and raw_bytes[0] == 0xFE and raw_bytes[1] == 0xFF:
+        content = raw_bytes.decode('utf-16-be')
+        detected_encoding = 'utf-16-be'
+    # Check for UTF-8 BOM (EF BB BF)
+    elif len(raw_bytes) >= 3 and raw_bytes[0] == 0xEF and raw_bytes[1] == 0xBB and raw_bytes[2] == 0xBF:
+        content = raw_bytes[3:].decode('utf-8')
+        detected_encoding = 'utf-8-sig'
+    # Check for null bytes pattern (likely UTF-16 LE without BOM)
+    elif len(raw_bytes) >= 4 and (raw_bytes[1] == 0 or raw_bytes[3] == 0):
+        try:
+            content = raw_bytes.decode('utf-16-le')
+            detected_encoding = 'utf-16-le'
+        except:
+            pass
+    
+    # If not detected, try encodings in order
+    if content is None:
+        for enc in ['utf-8', 'shift_jis', 'cp932', 'utf-16']:
+            try:
+                content = raw_bytes.decode(enc)
+                detected_encoding = enc
+                break
+            except (UnicodeDecodeError, LookupError):
+                continue
+    
+    if content is None:
+        show_toast('error', 'ファイルのエンコーディングを検出できませんでした')
+        return
     
     try:
         from io import StringIO
         
-        # Try UTF-8 first, then Shift-JIS for Japanese files
-        try:
-            df = pd.read_csv(StringIO(content), dtype=str)
-        except UnicodeDecodeError:
-            df = pd.read_csv(StringIO(content), dtype=str, encoding='shift_jis')
+        df = pd.read_csv(StringIO(content), dtype=str)
         
         # Update AppState (primary) and global (for backward compatibility)
         AppState.df = df

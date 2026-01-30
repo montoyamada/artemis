@@ -7,27 +7,21 @@
     <meta name="description" content="ARTEMIS - PyScriptで動作するブラウザベース特許分析ツール">
     <meta name="author" content="Hajime Kumami">
     <title>ARTEMIS - 特許分析ツール</title>
-    
-    
-    
+
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
-    
-    
+
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-    
-    
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.7/build/d3.layout.cloud.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
-    
-    
+
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    
+
     <style>
-        
+
         :root {
-            
             --color-primary: #4fc3f7;
             --color-primary-light: #81d4fa;
             --color-primary-dark: #29b6f6;
@@ -2422,22 +2416,13 @@
     </div>
 
     <script>
-        
-        
-        
-        
-        const PRODUCTION_MOD = true;
+        const DEBUG = false;
         let currentPage = null;
-        
-        
+
         function debugLog(...args) {
-            if (!PRODUCTION_MOD) {
-                debugLog(...args);
-            }
+            if (!DEBUG) return;
+            console.log(...args);
         }
-        
-        
-        
         window.__pyInitStart = Date.now();
         window.__pyInitTimer = setInterval(() => {
             const elapsed = Math.floor((Date.now() - window.__pyInitStart) / 1000);
@@ -2464,16 +2449,11 @@
                 debugLog(`[Init] Python初期化中... ${timeStr}`);
             }
         }, 1000);
-        
-        
-        
+
         window.quickData = null;
-        
         window.quickColumns = [];
-        
         window.quickReady = false;
-        
-        
+
         window.appState = {
             chartType: 'trend',
             statusBreakdownByType: {
@@ -2488,7 +2468,6 @@
             }
         };
 
-        
         
         function syncAtlasStatusCheckbox() {
             const checkbox = document.getElementById('use-status-breakdown');
@@ -2514,8 +2493,6 @@
             const state = window.appState.statusBreakdownByType || {};
             checkbox.checked = !!state[window.appState.chartType];
         }
-
-        
         function syncAtlasControls() {
             const lineControls = document.getElementById('atlas-line-controls');
             if (!lineControls) return;
@@ -2568,8 +2545,6 @@
             }
         }
 
-        
-        
         function syncCorePhase() {
             const sel = document.getElementById('core-phase');
             if (!sel) return;
@@ -2598,13 +2573,9 @@
             }
         }
 
-        
-        
         window.__pyReady = false;
-        
         window.__pendingLaunch = false;
 
-        
         function setPyReady(isReady) {
             debugLog('[Init] setPyReady called with:', isReady);
             
@@ -5553,8 +5524,12 @@ from pyodide.ffi import create_proxy
 import asyncio
 
 # デバッグログ関数（JavaScriptのdebugLog関数をラップ）
+PY_DEBUG = False
+
 def debugLog(*args):
     """コンソールにデバッグログを出力"""
+    if not PY_DEBUG:
+        return
     message = ' '.join(str(arg) for arg in args)
     console.log(message)
 

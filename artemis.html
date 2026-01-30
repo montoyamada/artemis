@@ -5550,10 +5550,10 @@ def drawChart(divId, dataJson, layoutJson):
     """Plotly.jsでチャートを描画"""
     window.drawChart(divId, dataJson, layoutJson)
 
-def updateProgress(message, percent):
+def updateProgress(percent):
     """進捗バーを更新"""
     if hasattr(window, 'updateProgress'):
-        window.updateProgress(message, percent)
+        window.updateProgress(percent)
 
 # ============================================================
 # 遁読み込みの重量パッケージ (scikit-learn, networkx)

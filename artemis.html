@@ -5892,6 +5892,11 @@ import unicodedata
 import functools
 from collections import Counter
 
+# HTMLエスケープ用のヘルパー関数
+def escape_html(text):
+    """HTMLエスケープを行う（html.escapeのラッパー）"""
+    return html.escape(str(text))
+
 # ============================================================
 # データ処理ライブラリ
 # ============================================================
@@ -6565,17 +6570,17 @@ class UIHelper:
     @staticmethod
     def warn_html(container_id: str, message: str):
         """警告メッセージHTMLを直接設定"""
-        UIHelper.set_html(container_id, f'<div class="status-warn">{html.escape(message)}</div>')
+        UIHelper.set_html(container_id, f'<div class="status-warn">{escape_html(message)}</div>')
     
     @staticmethod
     def error_html(container_id: str, message: str):
         """エラーメッセージHTMLを直接設定"""
-        UIHelper.set_html(container_id, f'<div class="status-err">{html.escape(message)}</div>')
+        UIHelper.set_html(container_id, f'<div class="status-err">{escape_html(message)}</div>')
     
     @staticmethod
     def info_html(container_id: str, message: str):
         """情報メッセージHTMLを直接設定"""
-        UIHelper.set_html(container_id, f'<div class="status-info">{html.escape(message)}</div>')
+        UIHelper.set_html(container_id, f'<div class="status-info">{escape_html(message)}</div>')
 
 # ============================================================
 # データ処理のヘルパー関数
@@ -6809,12 +6814,12 @@ async def on_file_change(event):
         html_str = f'<div class="status-ok">✅ {len(df):,} 行読み込み</div>'
         html_str += '<div style="overflow-x: auto; margin-top: 0.5rem;"><table class="data-table"><tr>'
         for c in list(df.columns)[:6]:
-            html_str += f'<th>{html.escape(str(c))}</th>'
+            html_str += f'<th>{escape_html(str(c))}</th>'
         html_str += '</tr>'
         for _, row in df.head(3).iterrows():
             html_str += '<tr>'
             for c in list(df.columns)[:6]:
-                html_str += f'<td>{html.escape(str(row[c])[:25])}</td>'
+                html_str += f'<td>{escape_html(str(row[c])[:25])}</td>'
             html_str += '</tr>'
         html_str += '</table></div>'
         preview.innerHTML = html_str
@@ -6825,7 +6830,7 @@ async def on_file_change(event):
             sel = document.getElementById(sel_id)
             if sel:
                 # Prevent XSS in option values and text
-                opts = ''.join(f'<option value="{html.escape(str(c))}">{html.escape(str(c))}</option>' for c in cols)
+                opts = ''.join(f'<option value="{escape_html(str(c))}">{escape_html(str(c))}</option>' for c in cols)
                 sel.innerHTML = opts
         
         # Auto-map columns based on common naming patterns
@@ -6853,7 +6858,7 @@ async def on_file_change(event):
         document.getElementById('file-info').textContent = f'📂 {file.name} ({len(df):,}件)'
         
     except Exception as e:
-        document.getElementById('preview-area').innerHTML = f'<div class="status-err">❌{html.escape(str(e))}</div>'
+        document.getElementById('preview-area').innerHTML = f'<div class="status-err">❌{escape_html(str(e))}</div>'
 
 # ============================================================
 # 分析エンジン初期化
@@ -7045,14 +7050,14 @@ def launch_engine(event):
         # 企業比較セセレクター (XSS sanitization)
         sel = document.getElementById('compare-companies')
         sel.innerHTML = ''.join(
-            f'<option value="{html.escape(str(a))}">{html.escape(str(a))}</option>' 
+            f'<option value="{escape_html(str(a))}">{escape_html(str(a))}</option>' 
             for a in top_applicants if a
         )
         
         # TF-IDF詳細セセレクター
         sel_tfidf = document.getElementById('tfidf-company')
         sel_tfidf.innerHTML = '<option value="(未選択)">(未選択)</option>' + ''.join(
-            f'<option value="{html.escape(str(a))}">{html.escape(str(a))}</option>' 
+            f'<option value="{escape_html(str(a))}">{escape_html(str(a))}</option>' 
             for a in top_applicants if a
         )
 
@@ -7060,7 +7065,7 @@ def launch_engine(event):
         sel_radar1 = document.getElementById('radar-company1')
         sel_radar2 = document.getElementById('radar-company2')
         radar_opts = '<option value="">(選択してください)</option>' + ''.join(
-            f'<option value="{html.escape(str(a))}">{html.escape(str(a))}</option>' 
+            f'<option value="{escape_html(str(a))}">{escape_html(str(a))}</option>' 
             for a in top_applicants if a
         )
         sel_radar1.innerHTML = radar_opts
@@ -7069,7 +7074,7 @@ def launch_engine(event):
         # 折れ線チャート出願人セセレクター
         sel_line = document.getElementById('atlas-line-applicants')
         sel_line.innerHTML = ''.join(
-            f'<option value="{html.escape(str(a))}">{html.escape(str(a))} ({top_applicant_counts.get(a, 0)})</option>'
+            f'<option value="{escape_html(str(a))}">{escape_html(str(a))} ({top_applicant_counts.get(a, 0)})</option>'
             for a in top_applicants if a
         )
         
@@ -7149,8 +7154,8 @@ def launch_engine(event):
     except Exception as e:
         import traceback
         status.innerHTML = (
-            f'<div class="status-err">❌ {html.escape(str(e))}</div>'
-            f'<pre style="font-size:0.7rem;">{html.escape(traceback.format_exc())}</pre>'
+            f'<div class="status-err">❌ {escape_html(str(e))}</div>'
+            f'<pre style="font-size:0.7rem;">{escape_html(traceback.format_exc())}</pre>'
         )
 
 # ============================================================
@@ -7980,7 +7985,7 @@ def update_core_axis_selects():
     axis_sel = document.getElementById('core-axis-select')
     if axis_sel:
         if axes:
-            axis_sel.innerHTML = ''.join([f'<option value="{html.escape(str(a))}">{html.escape(str(a))}</option>' for a in axes])
+            axis_sel.innerHTML = ''.join([f'<option value="{escape_html(str(a))}">{escape_html(str(a))}</option>' for a in axes])
         else:
             axis_sel.innerHTML = '<option value="">(軸がありません)</option>'
 
@@ -7990,13 +7995,13 @@ def render_core_rules():
         return
     html_out = ''
     for ax, cats in g_core_rules.items():
-        ax_safe = html.escape(str(ax))
+        ax_safe = escape_html(str(ax))
         html_out += f'<h4 style="margin-top:0.6rem;">軸: {ax_safe} ({len(cats)}件)</h4>'
         html_out += '<table class="data-table"><tr><th>分類</th><th>ルール</th><th>操作</th></tr>'
         for name, cd in cats.items():
-            name_safe = html.escape(str(name))
+            name_safe = escape_html(str(name))
             rule = cd['rule'] if isinstance(cd, dict) else cd
-            rule_safe = html.escape(str(rule))
+            rule_safe = escape_html(str(rule))
             html_out += (
                 f'<tr><td>{name_safe}</td><td>{rule_safe}</td><td>'
                 f'<button class="btn" data-axis="{ax_safe}" data-name="{name_safe}" onclick="window.coreEditRule(event)">編集</button> '
@@ -8019,7 +8024,7 @@ def core_add_rule(event):
     try:
         parse_core_rule(rule)
     except Exception as e:
-        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 構文エラー: {html.escape(str(e))}</div>'
+        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 構文エラー: {escape_html(str(e))}</div>'
         return
     if axis not in g_core_rules:
         g_core_rules[axis] = {}
@@ -8046,7 +8051,7 @@ def core_update_rule(event):
     try:
         parse_core_rule(rule)
     except Exception as e:
-        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 構文エラー: {html.escape(str(e))}</div>'
+        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 構文エラー: {escape_html(str(e))}</div>'
         return
     if axis not in g_core_rules:
         g_core_rules[axis] = {}
@@ -8180,7 +8185,7 @@ def core_ai_generate(event):
 """
         document.getElementById('core-ai-output').innerHTML = '<div class="status-ok">✅ プロンプトを生成しました</div><pre style="white-space: pre-wrap; font-size: 0.8rem;">' + prompt + '</pre>'
     except Exception as e:
-        document.getElementById('core-ai-output').innerHTML = f'<div class="status-err">❌ {html.escape(str(e))}</div>'
+        document.getElementById('core-ai-output').innerHTML = f'<div class="status-err">❌ {escape_html(str(e))}</div>'
 
 def core_import_json(event):
     global g_core_rules
@@ -8206,7 +8211,7 @@ def core_import_json(event):
         update_core_axis_selects()
         render_core_rules()
     except Exception as e:
-        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌{html.escape(str(e))}</div>'
+        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌{escape_html(str(e))}</div>'
 
 @ensure_data('core-run-status', '先に分析エンジンを起動してください')
 def core_run_classification(event):
@@ -8244,10 +8249,10 @@ def core_run_classification(event):
         summary_html = ''
         for ax in compiled.keys():
             counts = df[ax].str.split(';').explode().value_counts().head(20)
-            summary_html += f'<h4 style="margin-top:0.6rem;">{html.escape(str(ax))}</h4>'
+            summary_html += f'<h4 style="margin-top:0.6rem;">{escape_html(str(ax))}</h4>'
             summary_html += '<table class="data-table"><tr><th>カテゴリ</th><th>件数</th></tr>'
             for name, cnt in counts.items():
-                summary_html += f'<tr><td>{html.escape(str(name))}</td><td>{int(cnt)}</td></tr>'
+                summary_html += f'<tr><td>{escape_html(str(name))}</td><td>{int(cnt)}</td></tr>'
             summary_html += '</table>'
         document.getElementById('core-summary').innerHTML = summary_html
 
@@ -8257,7 +8262,7 @@ def core_run_classification(event):
 
         update_core_axis_selects()
     except Exception as e:
-        document.getElementById('core-run-status').innerHTML = f'<div class="status-err">❌{html.escape(str(e))}</div>'
+        document.getElementById('core-run-status').innerHTML = f'<div class="status-err">❌{escape_html(str(e))}</div>'
 
 @ensure_core_classified('core-reanalyze-output', '分類結果がありません')
 def core_reanalyze(event):
@@ -8316,7 +8321,7 @@ def core_reanalyze(event):
 """
         document.getElementById('core-reanalyze-output').innerHTML = '<div class="status-ok">✅ 再分析プロンプトを生成しました</div><pre style="white-space: pre-wrap; font-size: 0.8rem;">' + g_core_reanalyze_prompt + '</pre>'
     except Exception as e:
-        document.getElementById('core-reanalyze-output').innerHTML = f'<div class="status-err">❌ {html.escape(str(e))}</div>'
+        document.getElementById('core-reanalyze-output').innerHTML = f'<div class="status-err">❌ {escape_html(str(e))}</div>'
 
 @ensure_core_classified('core-map', '先に分類を実行してください')
 def core_draw_map(event):
@@ -8468,20 +8473,20 @@ def core_search(event):
         title_col = cm.get('title', df.columns[0])
         if title_col == '(未選択)': title_col = df.columns[0]
         
-        html = f'<div class="status-ok">🔍 {len(results)} 件ヒット（{int(mask.sum())}件中</div>'
+        result_html = f'<div class="status-ok">🔍 {len(results)} 件ヒット（{int(mask.sum())}件中</div>'
         if len(results) > 0:
-            html += '<table class="data-table"><tr><th>No.</th><th>タイトル</th><th>年</th><th>出願人</th></tr>'
+            result_html += '<table class="data-table"><tr><th>No.</th><th>タイトル</th><th>年</th><th>出願人</th></tr>'
             for i, (_, row) in enumerate(results.iterrows(), 1):
                 apps = row.get('applicant_list', [])
-                app_str = html.escape(str(apps[0])[:15]) if apps else '-'
-                title_cut = html.escape(str(row.get(title_col, ""))[:50])
-                html += f'<tr><td>{i}</td><td>{title_cut}</td><td>{row.get("year", "-")}</td><td>{app_str}</td></tr>'
-            html += '</table>'
+                app_str = escape_html(str(apps[0])[:15]) if apps else '-'
+                title_cut = escape_html(str(row.get(title_col, ""))[:50])
+                result_html += f'<tr><td>{i}</td><td>{title_cut}</td><td>{row.get("year", "-")}</td><td>{app_str}</td></tr>'
+            result_html += '</table>'
         
-        document.getElementById('core-results').innerHTML = html
+        document.getElementById('core-results').innerHTML = result_html
         
     except Exception as e:
-        document.getElementById('core-results').innerHTML = f'<div class="status-err">❌{html.escape(str(e))}</div>'
+        document.getElementById('core-results').innerHTML = f'<div class="status-err">❌{escape_html(str(e))}</div>'
 
 # =====================================================
 # Saturn V
@@ -8989,7 +8994,7 @@ def kwic_search(event):
             results.append({
                 'doc_id': doc_id,
                 'applicant': applicant,
-                'context': f'{prefix}{html.escape(before)}<mark style="background:#ffd93d;color:#000;font-weight:bold;">{html.escape(match)}</mark>{html.escape(after)}{suffix}'
+                'context': f'{prefix}{escape_html(before)}<mark style="background:#ffd93d;color:#000;font-weight:bold;">{escape_html(match)}</mark>{escape_html(after)}{suffix}'
             })
             
             pos += len(keyword)
@@ -9001,7 +9006,7 @@ def kwic_search(event):
             break
     
     if not results:
-        document.getElementById('kwic-result').innerHTML = f'<div class="status-warn">「{html.escape(keyword)}」が見つかりませんでした</div>'
+        document.getElementById('kwic-result').innerHTML = f'<div class="status-warn">「{escape_html(keyword)}」が見つかりませんでした</div>'
         return
     
     result_html = f'''
@@ -9012,7 +9017,7 @@ def kwic_search(event):
     '''
     
     for r in results:
-        result_html += f'<tr><td>{html.escape(r["doc_id"])}</td><td>{html.escape(r["applicant"])}</td><td style="text-align:left;">{r["context"]}</td></tr>'
+        result_html += f'<tr><td>{escape_html(r["doc_id"])}</td><td>{escape_html(r["applicant"])}</td><td style="text-align:left;">{r["context"]}</td></tr>'
     
     result_html += '</table>'
     document.getElementById('kwic-result').innerHTML = result_html
@@ -9133,14 +9138,14 @@ def build_network(event):
         '''
         top_nodes = sorted(centrality.items(), key=lambda x: -x[1])[:10]
         for node, cent in top_nodes:
-            stats_html += f'<tr><td>{html.escape(str(node)[:30])}</td><td>{degrees[node]}</td><td>{cent:.3f}</td></tr>'
+            stats_html += f'<tr><td>{escape_html(str(node)[:30])}</td><td>{degrees[node]}</td><td>{cent:.3f}</td></tr>'
         stats_html += '</table>'
         document.getElementById('network-stats').innerHTML = stats_html
         document.getElementById('network-status').innerHTML = '<span class="status-ok">✅ 完了</span>'
         
     except Exception as e:
         import traceback
-        document.getElementById('network-status').innerHTML = f'<span class="status-err">❌{html.escape(str(e))}</span>'
+        document.getElementById('network-status').innerHTML = f'<span class="status-err">❌{escape_html(str(e))}</span>'
         debugLog(traceback.format_exc())
 
 # =====================================================
@@ -9169,7 +9174,7 @@ def show_wordcloud(event):
             g_feature_names = g_vectorizer.get_feature_names_out().tolist()
             debugLog(f"[WordCloud] TF-IDF自動実行完了: {len(g_feature_names)} features")
         except Exception as e:
-            document.getElementById('wordcloud-chart').innerHTML = f'<div class="status-err">TF-IDF分析エラー: {html.escape(str(e))}</div>'
+            document.getElementById('wordcloud-chart').innerHTML = f'<div class="status-err">TF-IDF分析エラー: {escape_html(str(e))}</div>'
             return
     
     max_words = int(document.getElementById('wc-max-words').value)
@@ -9638,25 +9643,26 @@ def show_tfidf_detail(event):
     
     top_indices = np.argsort(diff)[::-1][:20]
     
-    html = f'''
-        <div class="status-ok">📊 {html.escape(str(company))} の特徴語分析（{len(company_indices)}件）</div>
+    company_escaped = escape_html(str(company))
+    result_html = f'''
+        <div class="status-ok">📊 {company_escaped} の特徴語分析（{len(company_indices)}件）</div>
         <table class="data-table" style="margin-top: 0.5rem;">
             <tr><th>キーワード</th><th>スコア</th><th>全体比</th></tr>
     '''
     
     for i in top_indices:
-        word = html.escape(str(g_feature_names[i]))
+        word = escape_html(str(g_feature_names[i]))
         score = float(company_tfidf[i])
         ratio = score / (overall_tfidf[i] + 0.0001)
         bar_width = min(100, ratio * 20)
-        html += f'''<tr>
+        result_html += f'''<tr>
             <td>{word}</td>
             <td>{score:.3f}</td>
             <td><div style="background:#4fc3f7; height:8px; width:{bar_width}%; border-radius:3px;"></div> {ratio:.1f}x</td>
         </tr>'''
     
-    html += '</table>'
-    document.getElementById('tfidf-result').innerHTML = html
+    result_html += '</table>'
+    document.getElementById('tfidf-result').innerHTML = result_html
 
 # =====================================================
 # MEGA - 戦略マトリクス (CAGR×シェア)
@@ -9793,7 +9799,7 @@ def show_strategy_matrix(event):
             pos = '💰 金なる木'
         else:
             pos = '🐕 負け犬'
-        summary_html += f'<tr><td>{html.escape(truncate_applicant_name(r["name"], 25))}</td><td>{r["share"]:.1f}%</td><td>{r["cagr"]:+.1f}%</td><td>{pos}</td></tr>'
+        summary_html += f'<tr><td>{escape_html(truncate_applicant_name(r["name"], 25))}</td><td>{r["share"]:.1f}%</td><td>{r["cagr"]:+.1f}%</td><td>{pos}</td></tr>'
     summary_html += '</table>'
     document.getElementById('strategy-summary').innerHTML = summary_html
 
@@ -10137,7 +10143,7 @@ def show_streamgraph(event):
                 return
             top_items = all_items.value_counts().head(top_n).index.tolist()
         except Exception as e:
-            document.getElementById('stream-chart').innerHTML = f'<div class="status-err">データ取得エラー: {html.escape(str(e))}</div>'
+            document.getElementById('stream-chart').innerHTML = f'<div class="status-err">データ取得エラー: {escape_html(str(e))}</div>'
             return
         
         # 年別集計
@@ -10364,14 +10370,14 @@ def show_data_preview(event=None):
     title_col = g_col_map.get('title', df.columns[0])
     if title_col == '(未選択)': title_col = df.columns[0]
     
-    html = '<table class="data-table"><tr><th>#</th><th>年</th><th>タイトル</th><th>出願人</th></tr>'
+    result_html = '<table class="data-table"><tr><th>#</th><th>年</th><th>タイトル</th><th>出願人</th></tr>'
     for i, (_, row) in enumerate(df.head(20).iterrows(), 1):
         apps = row.get('applicant_list', [])
-        app_str = html.escape(str(apps[0])[:20]) if apps else '-'
-        title = html.escape(str(row.get(title_col, ''))[:40])
-        html += f'<tr><td>{i}</td><td>{row.get("year", "-")}</td><td>{title}</td><td>{app_str}</td></tr>'
-    html += '</table>'
-    document.getElementById('data-preview').innerHTML = html
+        app_str = escape_html(str(apps[0])[:20]) if apps else '-'
+        title = escape_html(str(row.get(title_col, ''))[:40])
+        result_html += f'<tr><td>{i}</td><td>{row.get("year", "-")}</td><td>{title}</td><td>{app_str}</td></tr>'
+    result_html += '</table>'
+    document.getElementById('data-preview').innerHTML = result_html
 
 # =====================================================
 # イベント登録

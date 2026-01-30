@@ -5523,6 +5523,12 @@ from js import document, console, window
 from pyodide.ffi import create_proxy
 import asyncio
 
+# デバッグログ関数（JavaScriptのdebugLog関数をラップ）
+def debugLog(*args):
+    """コンソールにデバッグログを出力"""
+    message = ' '.join(str(arg) for arg in args)
+    console.log(message)
+
 # JavaScript関数への参照（window経由でアクセス）
 def drawChart(divId, dataJson, layoutJson):
     """Plotly.jsでチャートを描画"""

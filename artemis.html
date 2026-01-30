@@ -5403,7 +5403,7 @@
         }
 
         bindAtlasInputs();
-        setTimeout(requestHeavyPackages, 500);
+        // requestHeavyPackages is called from setPyReady(true) when Python is ready
         setPyReady(false);
         setupQuickFileParse();
         ensureAtlasStatusVisible();

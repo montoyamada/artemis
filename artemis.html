@@ -2990,9 +2990,10 @@
         }
 
         function quickStatusMap(statuses) {
+            // ダークテーマ対応: 視認性の高い鮮明な色
             const palette = [
-                '#AEC6CF','#779ECB','#B39EB5','#FFB7B2','#CFCFC4',
-                '#B0E0E6','#FFDAC1','#E2F0CB','#FDFD96','#FF6961'
+                '#4fc3f7','#81c784','#ffb74d','#ce93d8','#ef5350',
+                '#26a69a','#ffa726','#42a5f5','#ab47bc','#ec407a'
             ];
             const map = {};
             statuses.forEach((s, i) => { map[s] = palette[i % palette.length]; });
@@ -5955,10 +5956,10 @@ class Config:
 
 class Colors:
     """カラーパレット定義"""
-    # ステータス別チャート用のパステルパレット
+    # ステータス別チャート用パレット（ダークテーマ対応: 視認性の高い鮮明な色）
     PASTEL = (
-        "#AEC6CF", "#779ECB", "#B39EB5", "#FFB7B2", "#CFCFC4",
-        "#B0E0E6", "#FFDAC1", "#E2F0CB", "#FDFD96", "#FF6961",
+        "#4fc3f7", "#81c784", "#ffb74d", "#ce93d8", "#ef5350",
+        "#26a69a", "#ffa726", "#42a5f5", "#ab47bc", "#ec407a",
     )
     
     # チャート用のメインカラーシーケンス

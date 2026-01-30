@@ -4811,6 +4811,7 @@
                 const colorScale = d3[`interpolate${colorScheme}`] || d3.interpolateSpectral;
                 const colorFn = (d) => {
                     if (!d.parent) return '#0d1b2a';
+                    let ancestor = d;
                     while (ancestor.parent && ancestor.parent.parent) ancestor = ancestor.parent;
                     const siblings = ancestor.parent.children;
                     const idx = siblings.indexOf(ancestor);

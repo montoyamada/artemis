@@ -3603,6 +3603,7 @@
             const dropZone = document.getElementById('drop-zone');
             const fileInputHome = document.getElementById('file-input-home');
             const fileInput = document.getElementById('file-input');
+            const dataTransfer = new DataTransfer();
             
             if (!dropZone) return;
             
@@ -6284,7 +6285,7 @@ async def on_file_change(event):
         
         # Show preview table
         preview = document.getElementById('preview-area')
-        html = f'<div class="status-ok">✁{len(df):,} 行読み込み</div>'
+        html = f'<div class="status-ok">✅ {len(df):,} 行読み込み</div>'
         html += '<div style="overflow-x: auto; margin-top: 0.5rem;"><table class="data-table"><tr>'
         for c in list(df.columns)[:6]:
             html += f'<th>{c}</th>'

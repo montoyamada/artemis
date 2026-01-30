@@ -5705,7 +5705,7 @@ def ensure_sklearn() -> bool:
     except Exception:
         try:
             import js
-            js.window.requestHeavyPackages()
+            window.requestHeavyPackages()
         except Exception:
             pass
         return False
@@ -5728,7 +5728,7 @@ def ensure_networkx() -> bool:
     except Exception:
         try:
             import js
-            js.window.requestHeavyPackages()
+            window.requestHeavyPackages()
         except Exception:
             pass
         return False
@@ -6076,7 +6076,7 @@ class ChartHelper:
             hide_loading: 描画後にローディング表示を動解除するい        """
     # ローディング解除は描画完了にJS側で行われる
         if hide_loading:
-            js.showChartLoading(container_id, False, '')
+            window.showChartLoading(container_id, False, '')
         drawChart(container_id, json.dumps(traces), json.dumps(layout))
 
 # ============================================================
@@ -6511,7 +6511,7 @@ def launch_engine(event):
         valid_years = df[df['year'] > 0]['year']
         year_range = f"{int(valid_years.min())}-{int(valid_years.max())}" if len(valid_years) > 0 else "-"
         unique_applicants = df.explode('applicant_list')['applicant_list'].nunique()
-        js.updateDashboardStats(len(df), year_range, unique_applicants)
+        window.updateDashboardStats(len(df), year_range, unique_applicants)
         
         # ダッシュボードプレビューデータを準備
         import json
@@ -6554,10 +6554,10 @@ def launch_engine(event):
             'topIPC': top_ipc_js,
             'topKeywords': top_keywords_js
         }
-        js.updateDashboardPreview(json.dumps(preview_data))
+        window.updateDashboardPreview(json.dumps(preview_data))
         
         # トースト通知
-        js.showToast(f'分析エンジン起動完了 {len(df):,}件のデータを処理しました', 'success', 4000)
+        window.showToast(f'分析エンジン起動完了 {len(df):,}件のデータを処理しました', 'success', 4000)
         
         # Display completion status
         status_info = (
@@ -7449,9 +7449,9 @@ def core_add_rule(event):
     document.getElementById('core-cat-name').value = ''
     document.getElementById('core-cat-rule').value = ''
     document.getElementById('core-cat-def').value = ''
-    js.document.getElementById('btn-core-add').style.display = 'inline-block'
-    js.document.getElementById('btn-core-update').style.display = 'none'
-    js.document.getElementById('btn-core-cancel').style.display = 'none'
+    document.getElementById('btn-core-add').style.display = 'inline-block'
+    document.getElementById('btn-core-update').style.display = 'none'
+    document.getElementById('btn-core-cancel').style.display = 'none'
 
 def core_update_rule(event):
     global g_core_rules
@@ -7475,9 +7475,9 @@ def core_update_rule(event):
     document.getElementById('core-cat-name').value = ''
     document.getElementById('core-cat-rule').value = ''
     document.getElementById('core-cat-def').value = ''
-    js.document.getElementById('btn-core-add').style.display = 'inline-block'
-    js.document.getElementById('btn-core-update').style.display = 'none'
-    js.document.getElementById('btn-core-cancel').style.display = 'none'
+    document.getElementById('btn-core-add').style.display = 'inline-block'
+    document.getElementById('btn-core-update').style.display = 'none'
+    document.getElementById('btn-core-cancel').style.display = 'none'
 
 def core_delete_rule(axis, name):
     global g_core_rules
@@ -7497,21 +7497,21 @@ def core_edit_rule(axis, name):
     document.getElementById('core-cat-name').value = name
     document.getElementById('core-cat-rule').value = cd['rule'] if isinstance(cd, dict) else cd
     document.getElementById('core-cat-def').value = cd.get('definition', '') if isinstance(cd, dict) else ''
-    js.document.getElementById('core-axis-new').value = ''
-    js.document.getElementById('core-axis-select').disabled = False
-    js.document.getElementById('core-axis-new').disabled = True
+    document.getElementById('core-axis-new').value = ''
+    document.getElementById('core-axis-select').disabled = False
+    document.getElementById('core-axis-new').disabled = True
 
 def core_cancel_edit(event):
     document.getElementById('core-cat-name').value = ''
     document.getElementById('core-cat-rule').value = ''
     document.getElementById('core-cat-def').value = ''
-    js.document.getElementById('btn-core-add').style.display = 'inline-block'
-    js.document.getElementById('btn-core-update').style.display = 'none'
-    js.document.getElementById('btn-core-cancel').style.display = 'none'
+    document.getElementById('btn-core-add').style.display = 'inline-block'
+    document.getElementById('btn-core-update').style.display = 'none'
+    document.getElementById('btn-core-cancel').style.display = 'none'
     syncCoreAxisMode()
 
 # JS呼び出し用に公閁Eimport js
-js.eval("window.pyodide_globals = window.pyodide_globals || {}")
+window.eval("window.pyodide_globals = window.pyodide_globals || {}")
 
 def core_ai_generate(event):
     global g_df_processed, g_col_map
@@ -8336,7 +8336,7 @@ def show_emerging(event):
     title = f"急上昇キーワード TOP{top_n}（{base_year}年以降 vs 以前）"
     
     # D3.jsでアニメーション付き棒グラフを描画
-    js.drawAnimatedBarChart("emerging-chart", json.dumps(bar_data), title, "viridis")
+    window.drawAnimatedBarChart("emerging-chart", json.dumps(bar_data), title, "viridis")
 
 # =====================================================
 # KWIC検索 (Keyword in Context)
@@ -8531,7 +8531,7 @@ def build_network(event):
         title = f"{type_name}ネットワーク（{len(G.nodes())}ノード）- {centrality_name}"
         
         # D3.jsでインタラクティブなネットワークを描画
-        js.drawForceNetwork("network-chart", json.dumps(nodes_data), json.dumps(links_data), title)
+        window.drawForceNetwork("network-chart", json.dumps(nodes_data), json.dumps(links_data), title)
         
         html = f'''
             <div class="metrics">
@@ -8579,7 +8579,7 @@ def show_wordcloud(event):
             "score": float(sums[i])
         })
     
-    # JavaScript側のdrawWordCloud関数を呼び出い    js.drawWordCloud("wordcloud-chart", json.dumps(word_data), colorscheme)
+    # JavaScript側のdrawWordCloud関数を呼び出い    window.drawWordCloud("wordcloud-chart", json.dumps(word_data), colorscheme)
 
 # =====================================================
 # MEGA - N-gram分
@@ -8612,7 +8612,7 @@ def show_ngram(event):
     bar_data = [{"label": ng, "value": int(c)} for ng, c in top_ngrams]
     title = f"{'バイ' if n==2 else 'トライ'}グラム TOP{top_n}"
     # D3.jsでアニメーション付き棒グラフを描画
-    js.drawAnimatedBarChart("ngram-chart", json.dumps(bar_data), title, "warm")
+    window.drawAnimatedBarChart("ngram-chart", json.dumps(bar_data), title, "warm")
 
 # =====================================================
 # MEGA - 共起ネットワーク
@@ -8681,7 +8681,7 @@ def show_cooccurrence(event):
     title = f"キーワード共起ネットワーク（{len(G.nodes())}語 / {len(G.edges())}エッジ）"
     
     # D3.jsでインタラクティブな共起ネットワークを描画
-    js.drawForceNetwork("cooccur-chart", json.dumps(nodes_data), json.dumps(links_data), title)
+    window.drawForceNetwork("cooccur-chart", json.dumps(nodes_data), json.dumps(links_data), title)
 
 # =====================================================
 # NOVA - アドバンスド可視化（PyScript限定機能）
@@ -8762,7 +8762,7 @@ def show_sankey(event):
     sankey_data = {"nodes": nodes, "links": links}
     
     # D3.jsでサンキーダイアグラムを描画
-    js.drawSankeyDiagram("sankey-chart", json.dumps(sankey_data), color_scheme)
+    window.drawSankeyDiagram("sankey-chart", json.dumps(sankey_data), color_scheme)
 
 def show_bubble_race(event=None):
     """
@@ -8837,7 +8837,7 @@ def show_bubble_race(event=None):
     debugLog(f"[BubbleRace] Years: {len(sorted_years)}, Total applicants: {len(cumulative)}")
     
     # D3.jsでバブルレースを期化
-    js.drawBubbleRace("race-chart", json.dumps(race_data), speed)
+    window.drawBubbleRace("race-chart", json.dumps(race_data), speed)
 
 def show_circle_packing(event):
     """
@@ -8978,10 +8978,10 @@ def show_circle_packing(event):
             if child_patents:
                 patent_data[child_key] = child_patents[:100]
     
-    # JavaScriptに案件データを渡い    js.window.circlePackPatents = js.JSON.parse(json.dumps(patent_data))
+    # JavaScriptに案件データを渡い    window.circlePackPatents = window.JSON.parse(json.dumps(patent_data))
     
     # D3.jsでサークルパッキングを描画
-    js.drawCirclePacking("circle-chart", json.dumps(root_data))
+    window.drawCirclePacking("circle-chart", json.dumps(root_data))
 
 # =====================================================
 # MEGA - TF-IDF詳細
@@ -9391,7 +9391,7 @@ def show_sunburst(event):
     
     fix_empty_children(hierarchy)
     
-    js.drawSunburst("sunburst-chart", json.dumps(hierarchy), color_scheme)
+    window.drawSunburst("sunburst-chart", json.dumps(hierarchy), color_scheme)
 
 def show_chord(event):
     """コード図同関係）を表示"""
@@ -9432,7 +9432,7 @@ def show_chord(event):
                 matrix[idx_j][idx_i] += 1
     
     data = {"names": top_items, "matrix": matrix}
-    js.drawChordDiagram("chord-chart", json.dumps(data))
+    window.drawChordDiagram("chord-chart", json.dumps(data))
 
 def show_streamgraph(event):
     """ストリームグラフを表示"""
@@ -9525,7 +9525,7 @@ def show_streamgraph(event):
         return
     
     data = {"keys": top_items, "series": series}
-    js.drawStreamgraph("stream-chart", json.dumps(data))
+    window.drawStreamgraph("stream-chart", json.dumps(data))
 
 def show_dendrogram(event):
     """チドログラム階層クラスタリングを表示"""
@@ -9552,7 +9552,7 @@ def show_dendrogram(event):
         top_items = df.explode('applicant_list')['applicant_list'].value_counts().head(top_n).index.tolist()
         hierarchy = build_simple_hierarchy(top_items)
     
-    js.drawDendrogram("dendro-chart", json.dumps(hierarchy))
+    window.drawDendrogram("dendro-chart", json.dumps(hierarchy))
 
 def build_simple_hierarchy(items):
     """アイテムリストから簡易的な階層構造を構築"""
@@ -9776,11 +9776,11 @@ document.getElementById('btn-core-reanalyze').addEventListener('click', core_rea
 document.getElementById('btn-core-map').addEventListener('click', core_map_proxy)
 
 # JavaScript連携用のコールバックを登録
-js.window.pyodide_globals.core_delete_rule = core_delete_proxy
-js.window.pyodide_globals.core_edit_rule = core_edit_proxy
-js.window.pyodide_globals.update_core_axis_selects = update_core_axis_selects
-js.window.pyodide_globals.render_core_rules = render_core_rules
-js.window.pyodide_globals.finish_heavy_init = finish_heavy_init
+window.pyodide_globals.core_delete_rule = core_delete_proxy
+window.pyodide_globals.core_edit_rule = core_edit_proxy
+window.pyodide_globals.update_core_axis_selects = update_core_axis_selects
+window.pyodide_globals.render_core_rules = render_core_rules
+window.pyodide_globals.finish_heavy_init = finish_heavy_init
 
 # 残りのモジュールイベントハンドラーを登録
 document.getElementById('btn-saturn').addEventListener('click', create_proxy(run_saturn))
@@ -9810,7 +9810,7 @@ document.getElementById('btn-stream').addEventListener('click', create_proxy(sho
 document.getElementById('btn-dendro').addEventListener('click', create_proxy(show_dendrogram))
 
 # バブルレースのPython関数をJavaScriptから呼び出せるように登録
-js.window.pyShowBubbleRace = create_proxy(show_bubble_race)
+window.pyShowBubbleRace = create_proxy(show_bubble_race)
 
 # ============================================================
 # 初期化完了# ============================================================
@@ -9822,7 +9822,7 @@ debugLog('[ARTEMIS] Pythonエンジンの初期化が完了ました')
 # JavaScriptにPythonの準備完了通知
 try:
     import js
-    js.window.setPyReady(True)
+    window.setPyReady(True)
 except Exception:
     pass
     </script>

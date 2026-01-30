@@ -7486,7 +7486,7 @@ def core_add_rule(event):
     try:
         parse_core_rule(rule)
     except Exception as e:
-        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 語エラー: {str(e)}</div>'
+        document.getElementById('core-rule-status').innerHTML = f'<div class="status-err">❌ 構文エラー: {str(e)}</div>'
         return
     if axis not in g_core_rules:
         g_core_rules[axis] = {}

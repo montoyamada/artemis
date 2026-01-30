@@ -4516,6 +4516,7 @@
                 window.bubbleRaceState.yearIndex = 0;
                 window.bubbleRaceState.initialized = true;
                 
+                const btn = document.getElementById('btn-race-play');
                 if (btn) btn.textContent = '▶再生';
                 
                 window._bubbleRacePlayInternal = function() {
@@ -4726,6 +4727,7 @@
             if (!panel || !content) return;
             
             const nodeValue = node.value || 0;
+            const nodeName = node.data ? node.data.name : 'Unknown';
             
             title.innerHTML = `📋 ${nodeName} <span style="font-weight: normal; font-size: 0.85rem;">(${nodeValue}件)</span>`;
             
@@ -4829,7 +4831,7 @@
                     .innerRadius(d => d.y0)
                     .outerRadius(d => d.y1 - 1);
                 
-                g.selectAll('path')
+                const paths = g.selectAll('path')
                     .data(root.descendants().filter(d => d.depth))
                     .enter()
                     .append('path')
@@ -6348,18 +6350,23 @@ async def on_file_change(event):
         document.getElementById('preview-area').innerHTML = f'<div class="status-err">❁{str(e)}</div>'
 
 # ============================================================
-# 分析エンジン初期匁# ============================================================
+# 分析エンジン初期化
+# ============================================================
 
 def launch_engine(event):
     """
-    読み込んだデータで分析エンジンを期化する、    
-    生DataFrameを処理
+    読み込んだデータで分析エンジンを初期化する。
+    
+    生DataFrameを処理:
     - 日付を解析し年を抽出
-    - 出願人/発明者ストを分
+    - 出願人/発明者リストを分割
     - IPCコードを抽出
-    - テキスト析用のTF-IDF行を構篁    - ステータス色分を設定    
+    - テキスト分析用のTF-IDF行列を構築
+    - ステータス色分けを設定
+    
     Args:
-        event: ボタンクリックイベント    """
+        event: ボタンクリックイベント
+    """
     global g_df, g_df_processed, g_col_map, g_tfidf_matrix
     global g_vectorizer, g_feature_names, g_status_colors
     
@@ -8799,8 +8806,8 @@ def show_sankey(event):
     links = []
     for _, row in flow_counts.iterrows():
         source_key = f"app_{row['applicant']}"
-    target_key = f"ipc_{row['ipc']}"
-    if source_key in node_map and target_key in node_map:
+        target_key = f"ipc_{row['ipc']}"
+        if source_key in node_map and target_key in node_map:
             links.append({
                 "source": node_map[source_key],
                 "target": node_map[target_key],
@@ -8814,11 +8821,14 @@ def show_sankey(event):
 
 def show_bubble_race(event=None):
     """
-    バブルレースチャートを生・再生する、    年ごとの出願人ランキングをアニメーションで表示、    
+    バブルレースチャートを生成・再生する。
+    年ごとの出願人ランキングをアニメーションで表示。
+    
     Parameters
     ----------
     event : Event
-        ボタンクリックイベント    """
+        ボタンクリックイベント
+    """
     global g_df_processed
     if not require_data('race-chart', 'データを読み込んでください'):
         return
@@ -8892,11 +8902,14 @@ def show_bubble_race(event=None):
 
 def show_circle_packing(event):
     """
-    サークルパッキングを生成する、    階層色データ構造をインタラクチブな別表示、    
+    サークルパッキングを生成する。
+    階層的データ構造をインタラクティブに表示。
+    
     Parameters
     ----------
     event : Event
-        ボタンクリックイベント    """
+        ボタンクリックイベント
+    """
     global g_df_processed, g_col_map
     if not require_data('circle-chart', 'データを読み込んでください'):
         return

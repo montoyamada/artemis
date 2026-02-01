@@ -1,6 +1,6 @@
 # 🛰️ ARTEMIS - Browser-Based Patent Analysis Tool
 
-[🇯🇵 日本語](README.ja.md) | [🇬🇧 English](README.md)
+[�🇧 English](README.md) | [🇯🇵 日本語](README.ja.md)
 
 ---
 
@@ -71,10 +71,11 @@
 
 ```
 artemis/
-├── artemis.html    # Main application (single file)
-├── README.md       # English README (this file)
-├── README.ja.md    # Japanese README
-└── LICENSE.txt     # MIT License
+├── artemis.html      # English version (default)
+├── artemis_ja.html   # Japanese version
+├── README.md         # English README (this file)
+├── README.ja.md      # Japanese README
+└── LICENSE.txt       # MIT License
 ```
 
 ## 📋 Requirements

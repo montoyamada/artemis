@@ -1,6 +1,6 @@
 # 🛰️ ARTEMIS - ブラウザベース特許分析ツール
 
-[🇯🇵 日本語](README.ja.md) | [🇬🇧 English](README.md)
+[🇬🇧 English](README.md) | [🇯🇵 日本語](README.ja.md)
 
 ---
 
@@ -71,10 +71,11 @@
 
 ```
 artemis/
-├── artemis.html    # メインアプリケーション（単一ファイル）
-├── README.md       # English README
-├── README.ja.md    # 日本語README（このファイル）
-└── LICENSE.txt     # MITライセンス
+├── artemis.html      # 英語版（デフォルト）
+├── artemis_ja.html   # 日本語版
+├── README.md         # English README
+├── README.ja.md      # 日本語README（このファイル）
+└── LICENSE.txt       # MITライセンス
 ```
 
 ## 📋 動作要件

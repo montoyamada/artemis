@@ -165,6 +165,36 @@
             background-clip: text;
         }
 
+        /* Transformers.js ステータスインジケータ */
+        .transformers-status {
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .transformers-status.waiting {
+            background: rgba(100, 116, 139, 0.3);
+            color: var(--text-muted);
+        }
+        .transformers-status.loading {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--color-warning-light);
+            animation: pulse 1.5s infinite;
+        }
+        .transformers-status.ready {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--color-success-light);
+        }
+        .transformers-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--color-error-light);
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
         .badge {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);
             color: #000;
@@ -1349,6 +1379,7 @@
     <div class="header">
         <h1>ARTEMIS</h1>
         <span id="py-status" style="margin-left: 0.6rem; font-size: 0.75rem; opacity: 0.6; font-weight: 400;">Engine loading…</span>
+        <span id="transformers-status" class="transformers-status waiting" style="margin-left: 0.6rem; font-size: 0.7rem;">SBERT: 待機中</span>
         <span id="file-info" style="margin-left: auto; font-size: 0.8rem; opacity: 0.8; font-weight: 500; background: rgba(79, 195, 247, 0.1); padding: 0.3rem 0.8rem; border-radius: 20px;">データ未読込</span>
     </div>
     
@@ -1825,6 +1856,13 @@
                     <h2>技術マップ</h2>
                     <div class="grid-3" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
+                            <label>ベクトル化手法</label>
+                            <select id="vectorize-method">
+                                <option value="tfidf">TF-IDF</option>
+                                <option value="sbert">SBERT (Transformers.js)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>クラスタ数</label>
                             <input type="number" id="n-clusters" value="8" min="3" max="20">
                         </div>
@@ -1832,6 +1870,8 @@
                             <label>サンプル数 (0=全件)</label>
                             <input type="number" id="sample-size" value="500" min="0" step="100">
                         </div>
+                    </div>
+                    <div class="grid-3" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
                             <label>次元削減</label>
                             <select id="dim-method">
@@ -1840,19 +1880,22 @@
                                 <option value="tsne">t-SNE</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="grid-3" style="margin-bottom: 0.8rem;">
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" style="display: flex; align-items: center;">
                             <input type="checkbox" id="saturn-contour" checked>
                             <label for="saturn-contour" style="color: #e0e1dd;">等高線表示</label>
                         </div>
-                        <div class="checkbox-group">
+                        <div class="checkbox-group" style="display: flex; align-items: center;">
                             <input type="checkbox" id="saturn-hull">
                             <label for="saturn-hull" style="color: #e0e1dd;">クラスタ境界</label>
                         </div>
-                        <div class="checkbox-group">
+                    </div>
+                    <div class="grid-3" style="margin-bottom: 0.8rem;">
+                        <div class="checkbox-group" style="display: flex; align-items: center;">
                             <input type="checkbox" id="saturn-labels" checked>
                             <label for="saturn-labels" style="color: #e0e1dd;">ラベル表示</label>
+                        </div>
+                        <div id="sbert-warning" style="font-size: 0.75rem; color: var(--color-warning); display: none; grid-column: span 2;">
+                            ⚠️ SBERTの準備ができていません。モデルの読み込みをお待ちください。
                         </div>
                     </div>
                     <button id="btn-saturn" class="btn" style="width: 100%;">マップを生成</button>
@@ -2781,7 +2824,181 @@
                     }, 500);
                 }, delay);
             });
+            
+            // 他のモジュール完了後にTransformers.jsの読み込みを開始
+            const transformersDelay = plan.length * 700 + 1000;
+            setTimeout(() => {
+                requestTransformersJs();
+            }, transformersDelay);
         }
+
+        // ============================================================
+        // Transformers.js 遅延読み込み (SBERT埋め込み用)
+        // ============================================================
+        
+        // Transformers.js のグローバル状態
+        window.__transformersJsReady = false;
+        window.__transformersJsLoading = false;
+        window.__embeddingPipeline = null;
+        
+        /**
+         * Transformers.jsを遅延読み込みして埋め込みパイプラインを初期化
+         */
+        async function requestTransformersJs() {
+            if (window.__transformersJsLoading || window.__transformersJsReady) return;
+            window.__transformersJsLoading = true;
+            
+            debugLog('[Transformers.js] 遅延読み込み開始...');
+            updateTransformersProgress('ライブラリ読み込み中...', 'loading');
+            
+            try {
+                // Transformers.jsの動的インポート
+                const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2');
+                
+                // 環境設定
+                env.allowLocalModels = false;
+                env.useBrowserCache = true;
+                
+                debugLog('[Transformers.js] ライブラリ読み込み完了、パイプライン初期化中...');
+                updateTransformersProgress('モデル読み込み中...', 'loading');
+                
+                // 軽量モデルで埋め込みパイプラインを初期化 (~22MB)
+                window.__embeddingPipeline = await pipeline(
+                    'feature-extraction',
+                    'Xenova/all-MiniLM-L6-v2',
+                    { progress_callback: (progress) => {
+                        if (progress.status === 'progress') {
+                            const pct = Math.round((progress.loaded / progress.total) * 100);
+                            updateTransformersProgress(`モデルダウンロード中: ${pct}%`, 'loading');
+                        }
+                    }}
+                );
+                
+                window.__transformersJsReady = true;
+                window.__transformersJsLoading = false;
+                
+                debugLog('[Transformers.js] パイプライン準備完了');
+                updateTransformersProgress('準備完了', 'ready');
+                
+                // SBERT関連ボタンを有効化
+                const sbertButtons = document.querySelectorAll('.sbert-btn');
+                sbertButtons.forEach(btn => btn.disabled = false);
+                
+                // SBERT警告を非表示
+                const sbertWarning = document.getElementById('sbert-warning');
+                if (sbertWarning) sbertWarning.style.display = 'none';
+                
+            } catch (error) {
+                console.error('[Transformers.js] 読み込み失敗:', error);
+                window.__transformersJsLoading = false;
+                updateTransformersProgress('読み込み失敗', 'error');
+            }
+        }
+        
+        /**
+         * Transformers.jsの読み込み状態を表示
+         */
+        function updateTransformersProgress(message, state) {
+            const indicator = document.getElementById('transformers-status');
+            if (indicator) {
+                indicator.textContent = 'SBERT: ' + message;
+                indicator.className = 'transformers-status ' + state;
+            }
+            
+            // bg-loadエリアにも表示（まだ表示中の場合）
+            const bgStatus = document.getElementById('bg-load-status');
+            if (bgStatus && state === 'loading') {
+                bgStatus.textContent = `Transformers.js: ${message}`;
+            }
+        }
+        
+        /**
+         * Transformers.jsでテキストの埋め込みベクトルを取得
+         * @param {string[]} texts - 埋め込み対象のテキスト配列
+         * @returns {Promise<number[][]>} - 埋め込みベクトルの配列
+         */
+        async function getEmbeddings(texts, progressCallback = null) {
+            if (!window.__transformersJsReady || !window.__embeddingPipeline) {
+                throw new Error('Transformers.jsの準備ができていません。モデルの読み込みをお待ちください。');
+            }
+            
+            const embeddings = [];
+            const batchSize = 5; // UIの応答性を維持するため5件ずつ処理
+            
+            for (let i = 0; i < texts.length; i++) {
+                const output = await window.__embeddingPipeline(texts[i], {
+                    pooling: 'mean',
+                    normalize: true
+                });
+                embeddings.push(Array.from(output.data));
+                
+                // バッチごとに進捗を更新してUIに処理を戻す
+                if ((i + 1) % batchSize === 0 || i === texts.length - 1) {
+                    if (progressCallback) {
+                        progressCallback(i + 1, texts.length);
+                    }
+                    // ブラウザの「応答なし」警告を防ぐために処理を譲る
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                }
+            }
+            return embeddings;
+        }
+        
+        /**
+         * コサイン類似度を計算
+         */
+        function cosineSimilarity(a, b) {
+            let dotProduct = 0;
+            let normA = 0;
+            let normB = 0;
+            for (let i = 0; i < a.length; i++) {
+                dotProduct += a[i] * b[i];
+                normA += a[i] * a[i];
+                normB += b[i] * b[i];
+            }
+            return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+        }
+        
+        /**
+         * クエリに類似したテキストを検索
+         * @param {string} query - 検索クエリ
+         * @param {string[]} corpus - 検索対象のテキスト配列
+         * @param {number} topK - 返す結果数
+         * @returns {Promise<{index: number, text: string, score: number}[]>}
+         */
+        async function findSimilarTexts(query, corpus, topK = 10) {
+            if (!window.__transformersJsReady) {
+                throw new Error('Transformers.jsの準備ができていません');
+            }
+            
+            // クエリの埋め込みを取得
+            const queryOutput = await window.__embeddingPipeline(query, {
+                pooling: 'mean',
+                normalize: true
+            });
+            const queryEmbedding = Array.from(queryOutput.data);
+            
+            // コーパスの埋め込みを取得して類似度を計算
+            const results = [];
+            for (let i = 0; i < corpus.length; i++) {
+                const docOutput = await window.__embeddingPipeline(corpus[i], {
+                    pooling: 'mean',
+                    normalize: true
+                });
+                const docEmbedding = Array.from(docOutput.data);
+                const score = cosineSimilarity(queryEmbedding, docEmbedding);
+                results.push({ index: i, text: corpus[i], score });
+            }
+            
+            // 類似度でソートして上位K件を返す
+            results.sort((a, b) => b.score - a.score);
+            return results.slice(0, topK);
+        }
+        
+        // Pythonからアクセスできるようにwindowに登録
+        window.getEmbeddings = getEmbeddings;
+        window.findSimilarTexts = findSimilarTexts;
+        window.isTransformersReady = () => window.__transformersJsReady;
 
         function updateHeavyProgress(phaseText, states, elapsedSec) {
             const status = document.getElementById('bg-load-status');
@@ -3888,15 +4105,27 @@
          * @param {string} dataJson - トレースデータのJSON文字列
          * @param {string} layoutJson - レイアウト設定のJSON文字列
          */
-        function drawChart(divId, dataJson, layoutJson) {
+        function drawChart(divId, dataJson, layoutJson, editableAnnotations = false) {
             try {
                 const data = JSON.parse(dataJson);
                 const layout = JSON.parse(layoutJson);
                 
-                // ダークテーマ設定
-                layout.template = 'plotly_dark';
-                layout.paper_bgcolor = layout.paper_bgcolor || 'rgba(0,0,0,0)';
-                layout.plot_bgcolor = layout.plot_bgcolor || 'rgba(0,0,0,0)';
+                // #000が指定されている場合はテンプレートを無効化（テクノロジーマップ用）
+                const isBlackBg = layout.paper_bgcolor === '#000' || layout.plot_bgcolor === '#000';
+                if (isBlackBg) {
+                    // デフォルトテンプレートを無効化し、純粋な黒背景を使用
+                    layout.template = {};
+                    layout.paper_bgcolor = '#000';
+                    layout.plot_bgcolor = '#000';
+                } else {
+                    layout.template = 'plotly_dark';
+                    if (!layout.paper_bgcolor || layout.paper_bgcolor === 'rgba(0,0,0,0)') {
+                        layout.paper_bgcolor = 'rgba(0,0,0,0)';
+                    }
+                    if (!layout.plot_bgcolor || layout.plot_bgcolor === 'rgba(0,0,0,0.1)') {
+                        layout.plot_bgcolor = 'rgba(0,0,0,0)';
+                    }
+                }
                 layout.font = { color: '#e0e1dd', family: 'Meiryo, Segoe UI, sans-serif' };
                 
                 // タイトルの色を明示的に設定
@@ -3931,9 +4160,15 @@
                     font: { color: '#f1f5f9', size: 12, family: 'Meiryo, sans-serif' }
                 }, layout.hoverlabel || {});
                 
+                // アノテーション編集時はパンモードをデフォルトに
+                if (editableAnnotations) {
+                    layout.dragmode = 'pan';
+                }
+                
                 const config = {
                     responsive: true,
                     displaylogo: false,
+                    scrollZoom: editableAnnotations,
                     modeBarButtonsToRemove: ['lasso2d', 'select2d'],
                     toImageButtonOptions: {
                         format: 'png',
@@ -3941,7 +4176,11 @@
                         height: 600,
                         width: 900,
                         scale: 2
-                    }
+                    },
+                    edits: editableAnnotations ? { 
+                        annotationPosition: true,
+                        annotationTail: true
+                    } : {}
                 };
                 
                 Plotly.newPlot(divId, data, layout, config).then(() => {
@@ -5823,6 +6062,23 @@
             syncCoreAxisMode();
         }
         
+        // ベクトル化メソッド変更時のハンドラ
+        const vectorizeMethod = document.getElementById('vectorize-method');
+        if (vectorizeMethod) {
+            vectorizeMethod.addEventListener('change', function() {
+                const warning = document.getElementById('sbert-warning');
+                if (this.value === 'sbert') {
+                    if (!window.__transformersJsReady) {
+                        if (warning) warning.style.display = 'block';
+                    } else {
+                        if (warning) warning.style.display = 'none';
+                    }
+                } else {
+                    if (warning) warning.style.display = 'none';
+                }
+            });
+        }
+        
         // Python (PyScript) からアクセスできるようにwindowに登録
         window.drawChart = drawChart;
         window.updateProgress = updateProgress;
@@ -5907,7 +6163,7 @@ import numpy as np
 # PyScript/Pyodide連携
 # ============================================================
 from js import document, console, window
-from pyodide.ffi import create_proxy
+from pyodide.ffi import create_proxy, to_js
 import asyncio
 
 # デバッグログ関数（JavaScriptのdebugLog関数をラップ）
@@ -5921,9 +6177,9 @@ def debugLog(*args):
     console.log(message)
 
 # JavaScript関数への参照（window経由でアクセス）
-def drawChart(divId, dataJson, layoutJson):
+def drawChart(divId, dataJson, layoutJson, editableAnnotations=False):
     """Plotly.jsでチャートを描画"""
-    window.drawChart(divId, dataJson, layoutJson)
+    window.drawChart(divId, dataJson, layoutJson, editableAnnotations)
 
 def updateProgress(percent):
     """進捗バーを更新"""
@@ -6166,11 +6422,18 @@ def tokenize(text: str) -> list[str]:
     # Remove punctuation and numbers
     text = re.sub(r'[!"#$%&\'()*+,-./:;<=>?@\[\]^_`{|}~【】「」『』（）\d]', ' ', text)
     
+    # Split at Japanese connectors before extracting tokens
+    text = re.sub(r'(及び|又は|並びに|及|又|並|等|を|の|に|を有する)', ' ', text)
+    
     # Extract Japanese and English tokens
-    jp_tokens = re.findall(r'[一-龥ァ-ヴー]{2,8}', text)
+    jp_tokens = re.findall(r'[一-龥ァ-ヴー]{2,20}', text)
     en_tokens = re.findall(r'[a-z]{3,}', text)
     
-    return [w for w in jp_tokens + en_tokens if w not in STOPWORDS and len(w) >= 2]
+    # Filter out tokens ending with stopword characters
+    stopword_chars = '及又並等のにを'
+    filtered_jp = [w for w in jp_tokens if not any(w.endswith(c) for c in stopword_chars)]
+    
+    return [w for w in filtered_jp + en_tokens if w not in STOPWORDS and len(w) >= 2]
 
 def tokenize_text(text: str) -> str:
     """テキストをトークン化してスペース区切り文字列で返す。"""
@@ -6297,6 +6560,33 @@ def split_list(text: str, delim: str = ';') -> list[str]:
         if d in text:
             return [s.strip() for s in text.split(d) if s.strip()]
     return [text.strip()] if text.strip() else []
+
+# 特許形式語のストップワード（日本語・英語）
+PATENT_STOPWORDS = [
+    # 日本語の特許形式語
+    '前記', '上記', '本発明', '該', '前述', '上述', '後述', '第', '前記第',
+    '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+    '及び', '又は', '並びに', '従って', '対して', 'より', 'から', 'まで',
+    '及', '又', '並', '従', '対', '等', '下', '中', '内', '外', '間', '上', '後',
+    'こと', 'もの', 'よう', 'ため', '方法', '手段', '構成', '装置',
+    'とき', '場合', '状態', '次', '各', '全て', '一つ', '他', '同',
+    '有する', 'する', 'される', 'いる', 'ある', 'なる', '得る', 'できる', 'おいて', 'において',
+    '図', '実施例', '請求項', '明細書', '要約', '課題', '効果', '形態', '実施形態',
+    'その', 'この', 'これら', 'それら', 'これ', 'それ', 'どの', 'どれ',
+    '複数', '所定', '所望', '適宜', '任意', '特定',
+    'という', 'として', 'による', 'により', 'によって', 'を有する', 'を有し',
+    # 英語の特許形式語
+    'said', 'wherein', 'thereof', 'therein', 'thereto', 'thereby',
+    'comprising', 'comprises', 'comprised', 'including', 'includes',
+    'according', 'invention', 'present', 'embodiment', 'embodiments',
+    'method', 'apparatus', 'device', 'system', 'means', 'step', 'steps',
+    'claim', 'claims', 'claimed', 'fig', 'figure', 'figures',
+    'example', 'examples', 'preferred', 'various', 'particular',
+    'first', 'second', 'third', 'fourth', 'fifth', 'one', 'two', 'three',
+    'may', 'can', 'could', 'would', 'should', 'must', 'shall',
+    'also', 'further', 'however', 'therefore', 'thus', 'hence',
+    'provided', 'formed', 'configured', 'arranged', 'disposed',
+]
 
 def normalize_status(value: str | None) -> str:
     """ステータス値を正規化する。"""
@@ -6496,17 +6786,21 @@ class ChartHelper:
         return layout
     
     @classmethod
-    def draw(cls, container_id: str, traces: list, layout: dict, hide_loading: bool = True):
+    def draw(cls, container_id: str, traces: list, layout: dict, hide_loading: bool = True, editable_annotations: bool = False):
         """
-        チャートを描画SONシリアライズ付き        
+        チャートを描画（JSONシリアライズ付き）
+        
         Args:
             container_id: 描画先コンテナID
-            traces: Plotlyトレースのリスト            layout: Plotlyレイアウト辞書
-            hide_loading: 描画後にローディング表示を動解除するい        """
-    # ローディング解除は描画完了にJS側で行われる
+            traces: Plotlyトレースのリスト
+            layout: Plotlyレイアウト辞書
+            hide_loading: 描画後にローディング表示を自動解除するか
+            editable_annotations: アノテーションをドラッグ可能にするか
+        """
+        # ローディング解除は描画完了にJS側で行われる
         if hide_loading:
             window.showChartLoading(container_id, False, '')
-        drawChart(container_id, json.dumps(traces), json.dumps(layout))
+        drawChart(container_id, json.dumps(traces), json.dumps(layout), editable_annotations)
 
 # ============================================================
 # UI ヘルパー関数
@@ -7010,7 +7304,7 @@ def launch_engine(event):
         feature_names = []
         
         if ensure_sklearn():
-            vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95)
+            vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95, stop_words=PATENT_STOPWORDS)
             tfidf_matrix = vectorizer.fit_transform(df['tokenized'].fillna(''))
             feature_names = vectorizer.get_feature_names_out().tolist()
         
@@ -8393,7 +8687,7 @@ def finish_heavy_init():
         return
     try:
         df = g_df_processed
-        g_vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95)
+        g_vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95, stop_words=PATENT_STOPWORDS)
         g_tfidf_matrix = g_vectorizer.fit_transform(df['tokenized'].fillna(''))
         g_feature_names = g_vectorizer.get_feature_names_out().tolist()
         try:
@@ -8492,8 +8786,27 @@ def core_search(event):
 # Saturn V
 # =====================================================
 @ensure_data('saturn-status')
-@ensure_tfidf('saturn-status')
 def run_saturn(event):
+    """技術マップ生成（TF-IDF または SBERT を選択可能）"""
+    global g_df_processed, g_tfidf_matrix, g_feature_names, g_col_map
+    
+    vectorize_method = document.getElementById('vectorize-method').value
+    
+    if vectorize_method == 'sbert':
+        # Transformers.jsの準備ができているかチェック
+        if not window.isTransformersReady():
+            UIHelper.show_error('saturn-status', 'SBERT準備中', 'Transformers.jsモデルの読み込みをお待ちください。')
+            return
+        # JavaScript経由でSBERT処理を実行
+        run_saturn_sbert()
+    else:
+        # TF-IDF（既存ロジック）を使用
+        run_saturn_tfidf(event)
+
+@ensure_data('saturn-status')
+@ensure_tfidf('saturn-status')
+def run_saturn_tfidf(event):
+    """TF-IDFベクトル化による技術マップ（オリジナルロジック）"""
     global g_df_processed, g_tfidf_matrix, g_feature_names, g_col_map
     
     # ボタンのローディング状態を設定
@@ -8651,44 +8964,82 @@ def run_saturn(event):
             
             traces.append(trace)
         
-        # クラスタ中心性ラベル
+        # クラスタ中心性ラベル（アノテーション方式で重複防止）
+        cluster_annotations = []
+        center_markers_x = []
+        center_markers_y = []
+        center_markers_color = []
         if show_labels:
-            center_x = []
-            center_y = []
-            center_text = []
+            centers = []
             for k in range(n_clusters):
                 mask = dfs['cluster'] == k
                 if mask.sum() == 0: continue
-                cx = dfs.loc[mask, 'x'].mean()
-                cy = dfs.loc[mask, 'y'].mean()
-                center_x.append(float(cx))
-                center_y.append(float(cy))
+                cx = float(dfs.loc[mask, 'x'].mean())
+                cy = float(dfs.loc[mask, 'y'].mean())
                 
                 # クラスタの主要キーワードを取得
                 cluster_indices = np.where(mask)[0]
                 cluster_tfidf = g_tfidf_matrix[idx[cluster_indices]].mean(axis=0).A1
                 top_idx = np.argsort(cluster_tfidf)[::-1][:2]
                 top_kw = ', '.join([g_feature_names[i] for i in top_idx])
-                center_text.append(f"<b>C{k+1}</b><br>{top_kw}")
+                centers.append({'k': k, 'x': cx, 'y': cy, 'kw': top_kw, 'color': COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]})
+                
+                # 中心マーカー用
+                center_markers_x.append(cx)
+                center_markers_y.append(cy)
+                center_markers_color.append(COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)])
             
-            traces.append({
-                "x": center_x,
-                "y": center_y,
-                "mode": "text",
-                "type": "scatter",
-                "text": center_text,
-                "textfont": {"size": 11, "color": "#fff"},
-                "showlegend": False,
-                "hoverinfo": "skip"
-            })
+            # 中心に×マーカーを追加
+            if center_markers_x:
+                traces.append({
+                    "x": center_markers_x,
+                    "y": center_markers_y,
+                    "mode": "markers",
+                    "type": "scatter",
+                    "marker": {
+                        "symbol": "x",
+                        "size": 14,
+                        "color": center_markers_color,
+                        "line": {"width": 2, "color": "#fff"}
+                    },
+                    "showlegend": False,
+                    "hoverinfo": "skip",
+                    "name": "Cluster Centers"
+                })
+            
+            # ラベルは中心から線で結ぶ（ドラッグ可能）
+            for i, c in enumerate(centers):
+                ax_offset = 40 * (1 if i % 2 == 0 else -1)
+                ay_offset = -50 - (i % 4) * 15
+                
+                cluster_annotations.append({
+                    "x": c['x'],
+                    "y": c['y'],
+                    "ax": ax_offset,
+                    "ay": ay_offset,
+                    "text": f"<b>C{c['k']+1}</b><br>{c['kw']}",
+                    "showarrow": True,
+                    "arrowhead": 0,
+                    "arrowsize": 1,
+                    "arrowwidth": 1.5,
+                    "arrowcolor": c['color'],
+                    "font": {"size": 11, "color": "#fff"},
+                    "bgcolor": "rgba(0,0,0,0.7)",
+                    "borderpad": 4,
+                    "bordercolor": c['color'],
+                    "borderwidth": 1
+                })
         
         layout = ChartHelper.create_layout(
             title=f"技術ランドスケープ ({dim_method.upper()} + K-Means)",
             height=600,
             showlegend=True,
-            legend={"orientation": "h", "y": -0.1}
+            legend={"orientation": "h", "y": -0.1},
+            annotations=cluster_annotations if show_labels else [],
+            paper_bgcolor="#000",
+            plot_bgcolor="#000"
         )
-        ChartHelper.draw("saturn-chart", traces, layout)
+        ChartHelper.draw("saturn-chart", traces, layout, editable_annotations=show_labels)
         
         import html as html_module
         summary_html = '<h4 style="margin-top: 0.5rem;">クラスタサマリー</h4><table class="data-table"><tr><th>クラスタ</th><th>件数</th><th>主要キーワード</th></tr>'
@@ -8712,6 +9063,332 @@ def run_saturn(event):
     finally:
         UIHelper.set_button_loading('btn-saturn-run', False)
         UIHelper.show_chart_loading('saturn-chart', False)
+
+
+def run_saturn_sbert():
+    """SBERT (Transformers.js) ベクトル化による技術マップ"""
+    global g_df_processed, g_col_map
+    
+    UIHelper.set_button_loading('btn-saturn-run', True)
+    UIHelper.show_chart_loading('saturn-chart', True, 'SBERTで埋め込みを生成中...')
+    document.getElementById('saturn-status').innerHTML = '<span class="spinner"></span> SBERT埋め込み計算中...'
+    
+    try:
+        df = g_df_processed
+        n_clusters = int(document.getElementById('n-clusters').value)
+        sample_size = int(document.getElementById('sample-size').value)
+        dim_method = document.getElementById('dim-method').value
+        
+        # 埋め込み対象のテキスト列を取得
+        text_col = g_col_map.get('abstract', g_col_map.get('title', df.columns[0]))
+        if text_col == '(未選択)':
+            text_col = df.columns[0]
+        
+        # サンプリング
+        if sample_size > 0 and sample_size < len(df):
+            idx = np.random.choice(len(df), sample_size, replace=False)
+            dfs = df.iloc[idx].copy().reset_index(drop=True)
+        else:
+            dfs = df.copy().reset_index(drop=True)
+            idx = np.arange(len(df))
+        
+        # 埋め込み対象テキストを取得
+        texts = dfs[text_col].fillna('').astype(str).tolist()
+        
+        # JavaScript側のgetEmbeddings関数を非同期ブリッジ経由で呼び出す
+        async def compute_sbert_embeddings():
+            try:
+                document.getElementById('saturn-status').innerHTML = f'<span class="spinner"></span> {len(texts)}件のドキュメントを埋め込み中...'
+                
+                # 進捗コールバックでUIを更新
+                def update_progress(current, total):
+                    pct = int((current / total) * 100)
+                    document.getElementById('saturn-status').innerHTML = f'<span class="spinner"></span> 埋め込み中: {current}/{total} ({pct}%)'
+                
+                progress_callback = create_proxy(update_progress)
+                
+                # Transformers.jsから埋め込みを取得（進捗更新付き）
+                embeddings_promise = window.getEmbeddings(to_js(texts), progress_callback)
+                embeddings_js = await embeddings_promise
+                
+                # numpy配列に変換
+                embeddings_list = embeddings_js.to_py()
+                X = np.array(embeddings_list)
+                
+                debugLog(f'[SBERT] 埋め込み形状: {X.shape}')
+                document.getElementById('saturn-status').innerHTML = '<span class="spinner"></span> クラスタリング中...'
+                
+                # 次元削減
+                if not ensure_sklearn():
+                    UIHelper.show_error('saturn-status', 'sklearn準備中', '追加モジュールの読み込みをお待ちください。')
+                    return
+                
+                if dim_method == 'pca':
+                    reducer = PCA(n_components=min(50, X.shape[1]))
+                    X_reduced = reducer.fit_transform(X)
+                    reducer2d = PCA(n_components=2)
+                    coords = reducer2d.fit_transform(X_reduced)
+                elif dim_method == 'svd':
+                    reducer = TruncatedSVD(n_components=min(50, X.shape[1]-1))
+                    X_reduced = reducer.fit_transform(X)
+                    reducer2d = TruncatedSVD(n_components=2)
+                    coords = reducer2d.fit_transform(X_reduced)
+                else:  # tsne
+                    reducer = PCA(n_components=min(30, X.shape[1]))
+                    X_reduced = reducer.fit_transform(X)
+                    tsne = TSNE(n_components=2, perplexity=min(30, len(X_reduced)-1), random_state=42, n_iter=300)
+                    coords = tsne.fit_transform(X_reduced)
+                
+                # クラスタリング
+                kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+                labels = kmeans.fit_predict(X_reduced if dim_method != 'tsne' else coords)
+                
+                dfs['x'] = coords[:, 0]
+                dfs['y'] = coords[:, 1]
+                dfs['cluster'] = labels
+                
+                title_col = g_col_map.get('title', df.columns[0])
+                if title_col == '(未選択)': title_col = df.columns[0]
+                
+                # オプション
+                show_contour = document.getElementById('saturn-contour').checked
+                show_hull = document.getElementById('saturn-hull').checked
+                show_labels = document.getElementById('saturn-labels').checked
+                
+                traces = []
+                
+                # 等高線 (TF-IDFと同じスタイル)
+                if show_contour:
+                    x_all = [float(c) for c in coords[:, 0]]
+                    y_all = [float(c) for c in coords[:, 1]]
+                    traces.append({
+                        "type": "histogram2dcontour",
+                        "x": x_all,
+                        "y": y_all,
+                        "colorscale": "Blues",
+                        "reversescale": False,
+                        "showscale": False,
+                        "autocontour": True,
+                        "ncontours": 20,
+                        "contours": {"coloring": "heatmap", "showlines": True},
+                        "line": {"width": 0.5, "color": "rgba(255,255,255,0.3)"},
+                        "hoverinfo": "skip",
+                        "name": "等高線"
+                    })
+                
+                # クラスタ境界 (TF-IDFと同じスタイル)
+                if show_hull:
+                    for k in range(n_clusters):
+                        cluster_mask = dfs['cluster'] == k
+                        if cluster_mask.sum() < 3:
+                            continue
+                        cluster_points = coords[cluster_mask.values]
+                        
+                        center = cluster_points.mean(axis=0)
+                        angles = np.arctan2(cluster_points[:, 1] - center[1], 
+                                           cluster_points[:, 0] - center[0])
+                        sorted_idx = np.argsort(angles)
+                        n_hull = max(8, len(sorted_idx) // 5)
+                        step = max(1, len(sorted_idx) // n_hull)
+                        hull_idx = sorted_idx[::step]
+                        sorted_points = cluster_points[hull_idx]
+                        hull_x = list(sorted_points[:, 0]) + [sorted_points[0, 0]]
+                        hull_y = list(sorted_points[:, 1]) + [sorted_points[0, 1]]
+                        
+                        color = COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]
+                        r = int(color[1:3], 16)
+                        g = int(color[3:5], 16)
+                        b = int(color[5:7], 16)
+                        
+                        traces.append({
+                            "type": "scatter",
+                            "mode": "lines",
+                            "x": [float(x) for x in hull_x],
+                            "y": [float(y) for y in hull_y],
+                            "line": {"color": color, "width": 2, "dash": "dot"},
+                            "fill": "toself",
+                            "fillcolor": f"rgba({r},{g},{b},0.1)",
+                            "showlegend": False,
+                            "hoverinfo": "skip",
+                            "name": f"C{k+1}境界"
+                        })
+                
+                # クラスタ別の散布図 (TF-IDFと同じスタイル)
+                for k in range(n_clusters):
+                    mask = dfs['cluster'] == k
+                    if mask.sum() == 0: continue
+                    subset = dfs[mask]
+                    
+                    hover_texts = []
+                    for _, row in subset.iterrows():
+                        title = str(row.get(title_col, ''))[:40]
+                        hover_texts.append(f'<b>{title}...</b>')
+                    
+                    traces.append({
+                        "x": [float(x) for x in subset['x']],
+                        "y": [float(y) for y in subset['y']],
+                        "mode": "markers",
+                        "type": "scatter",
+                        "name": f"C{k+1} ({len(subset)}件)",
+                        "text": hover_texts,
+                        "hoverinfo": "text",
+                        "marker": {"size": 8, "color": COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)], "opacity": 0.75, "line": {"width": 0.5, "color": "#fff"}}
+                    })
+                
+                # SBERTベースのキーワード抽出: クラスタ中心に近い単語を検索
+                global g_tfidf_matrix, g_feature_names, g_vectorizer
+                
+                document.getElementById('saturn-status').innerHTML = '<span class="spinner"></span> キーワード抽出中 (SBERT)...'
+                
+                # グローバルTF-IDF語彙が存在することを確認（ストップワード除外済みの単語リスト）
+                if g_feature_names is None or len(g_feature_names) == 0:
+                    g_vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95, stop_words=PATENT_STOPWORDS)
+                    g_tfidf_matrix = g_vectorizer.fit_transform(texts)
+                    g_feature_names = g_vectorizer.get_feature_names_out()
+                
+                # 全語彙の埋め込みを取得（1回だけの計算）
+                vocab_list = list(g_feature_names)
+                debugLog(f'[SBERT] {len(vocab_list)}語の埋め込みを計算中...')
+                
+                vocab_emb_promise = window.getEmbeddings(to_js(vocab_list), None)
+                vocab_emb_js = await vocab_emb_promise
+                vocab_embeddings = np.array(vocab_emb_js.to_py())
+                
+                # 語彙埋め込みを正規化
+                from numpy.linalg import norm
+                vocab_norms = norm(vocab_embeddings, axis=1, keepdims=True)
+                vocab_norms[vocab_norms == 0] = 1
+                vocab_embeddings_normalized = vocab_embeddings / vocab_norms
+                
+                # 各クラスタについて、中心に近い単語を検索
+                cluster_keywords = {}
+                for k in range(n_clusters):
+                    mask = dfs['cluster'] == k
+                    if mask.sum() == 0:
+                        cluster_keywords[k] = []
+                        continue
+                    
+                    # SBERT空間でのクラスタ中心
+                    cluster_indices = np.where(mask)[0]
+                    cluster_centroid = X[cluster_indices].mean(axis=0)
+                    centroid_norm = norm(cluster_centroid)
+                    if centroid_norm > 0:
+                        cluster_centroid = cluster_centroid / centroid_norm
+                    
+                    # 全語彙とのコサイン類似度を計算
+                    similarities = vocab_embeddings_normalized @ cluster_centroid
+                    
+                    # トップキーワードを取得
+                    top_idx = np.argsort(similarities)[::-1][:10]
+                    cluster_keywords[k] = [(vocab_list[i], float(similarities[i])) for i in top_idx]
+                
+                # SBERTベースのキーワード付きクラスタラベル（アノテーション方式で重複防止）
+                cluster_annotations = []
+                center_markers_x = []
+                center_markers_y = []
+                center_markers_color = []
+                if show_labels:
+                    centers = []
+                    for k in range(n_clusters):
+                        mask = dfs['cluster'] == k
+                        if mask.sum() == 0: continue
+                        cx = float(dfs.loc[mask, 'x'].mean())
+                        cy = float(dfs.loc[mask, 'y'].mean())
+                        
+                        kws = cluster_keywords.get(k, [])
+                        top_kw = ', '.join([kw for kw, _ in kws[:2]]) if kws else ''
+                        centers.append({'k': k, 'x': cx, 'y': cy, 'kw': top_kw, 'color': COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]})
+                        
+                        # 中心マーカー用
+                        center_markers_x.append(cx)
+                        center_markers_y.append(cy)
+                        center_markers_color.append(COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)])
+                    
+                    # 中心に×マーカーを追加
+                    if center_markers_x:
+                        traces.append({
+                            "x": center_markers_x,
+                            "y": center_markers_y,
+                            "mode": "markers",
+                            "type": "scatter",
+                            "marker": {
+                                "symbol": "x",
+                                "size": 14,
+                                "color": center_markers_color,
+                                "line": {"width": 2, "color": "#fff"}
+                            },
+                            "showlegend": False,
+                            "hoverinfo": "skip",
+                            "name": "Cluster Centers"
+                        })
+                    
+                    # ラベルは中心から線で結ぶ（ドラッグ可能）
+                    for i, c in enumerate(centers):
+                        ax_offset = 40 * (1 if i % 2 == 0 else -1)
+                        ay_offset = -50 - (i % 4) * 15
+                        
+                        cluster_annotations.append({
+                            "x": c['x'],
+                            "y": c['y'],
+                            "ax": ax_offset,
+                            "ay": ay_offset,
+                            "text": f"<b>C{c['k']+1}</b><br>{c['kw']}",
+                            "showarrow": True,
+                            "arrowhead": 0,
+                            "arrowsize": 1,
+                            "arrowwidth": 1.5,
+                            "arrowcolor": c['color'],
+                            "font": {"size": 11, "color": "#fff"},
+                            "bgcolor": "rgba(0,0,0,0.7)",
+                            "borderpad": 4,
+                            "bordercolor": c['color'],
+                            "borderwidth": 1
+                        })
+                
+                layout = ChartHelper.create_layout(
+                    title=f"技術ランドスケープ (SBERT + {dim_method.upper()})",
+                    height=600,
+                    showlegend=True,
+                    legend={"orientation": "h", "y": -0.1},
+                    annotations=cluster_annotations if show_labels else [],
+                    paper_bgcolor="#000",
+                    plot_bgcolor="#000"
+                )
+                ChartHelper.draw("saturn-chart", traces, layout, editable_annotations=show_labels)
+                
+                # SBERTベースのキーワード付きサマリー
+                import html as html_module
+                summary_html = '<h4 style="margin-top: 0.5rem;">クラスタサマリー (SBERT)</h4><table class="data-table"><tr><th>クラスタ</th><th>件数</th><th>キーワード (類似度)</th></tr>'
+                for k in range(n_clusters):
+                    mask = dfs['cluster'] == k
+                    cnt = int(mask.sum())
+                    if cnt > 0:
+                        kws = cluster_keywords.get(k, [])
+                        kw_str = ', '.join([f"{html_module.escape(kw)} ({sim:.2f})" for kw, sim in kws[:5]])
+                        summary_html += f'<tr><td style="color:{COLOR_SEQUENCE[k % len(COLOR_SEQUENCE)]}; font-weight:bold;">C{k+1}</td><td>{cnt}</td><td style="font-size:0.75rem;">{kw_str}</td></tr>'
+                summary_html += '</table>'
+                document.getElementById('saturn-summary').innerHTML = summary_html
+                
+                UIHelper.show_success('saturn-status', '分析完了 (SBERT)', f'{n_clusters}クラスタを検出しました')
+                
+            except Exception as e:
+                import traceback
+                UIHelper.show_error('saturn-status', 'SBERTエラー', str(e))
+                debugLog(f'[SBERT] エラー: {traceback.format_exc()}')
+            finally:
+                UIHelper.set_button_loading('btn-saturn-run', False)
+                UIHelper.show_chart_loading('saturn-chart', False)
+        
+        # 非同期関数を実行
+        asyncio.ensure_future(compute_sbert_embeddings())
+        
+    except Exception as e:
+        import traceback
+        UIHelper.show_error('saturn-status', 'エラー', str(e))
+        debugLog(traceback.format_exc())
+        UIHelper.set_button_loading('btn-saturn-run', False)
+        UIHelper.show_chart_loading('saturn-chart', False)
+
 
 # =====================================================
 # Explorer
@@ -9169,7 +9846,7 @@ def show_wordcloud(event):
             return
         
         try:
-            g_vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95)
+            g_vectorizer = TfidfVectorizer(max_features=2000, min_df=2, max_df=0.95, stop_words=PATENT_STOPWORDS)
             g_tfidf_matrix = g_vectorizer.fit_transform(g_df_processed['tokenized'].fillna(''))
             g_feature_names = g_vectorizer.get_feature_names_out().tolist()
             debugLog(f"[WordCloud] TF-IDF自動実行完了: {len(g_feature_names)} features")

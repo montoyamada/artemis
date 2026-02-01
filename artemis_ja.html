@@ -11,13 +11,13 @@
     See LICENSE.txt for details.
 -->
 
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ARTEMIS - Browser-based patent analysis tool powered by PyScript">
+    <meta name="description" content="ARTEMIS - PyScriptで動作するブラウザベース特許分析ツール">
     <meta name="author" content="Hajime Kumami">
-    <title>ARTEMIS - Patent Analysis Tool</title>
+    <title>ARTEMIS - 特許分析ツール</title>
 
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
@@ -1337,11 +1337,11 @@
     <div id="init-overlay">
         <h1>ARTEMIS</h1>
         <div class="spinner"></div>
-        <p id="init-status" style="font-size: 1rem; margin-top: 0.5rem;">Initializing Python environment...</p>
-        <p id="init-elapsed" class="init-subtitle">Elapsed: 0s</p>
-        <p id="init-detail" class="init-detail">Downloading Pyodide + pandas + numpy</p>
-        <p class="init-hint">Starting with minimal config. Heavy modules loading in background</p>
-        <p id="bg-load-status" style="font-size: 0.75rem; opacity: 0.5; margin-top: 0.4rem;">Additional modules: Not loaded</p>
+        <p id="init-status" style="font-size: 1rem; margin-top: 0.5rem;">Python環境初期化中...</p>
+        <p id="init-elapsed" class="init-subtitle">経過時間: 0秒</p>
+        <p id="init-detail" class="init-detail">Pyodide + pandas + numpy をダウンロード中</p>
+        <p class="init-hint">最小構成で起動中。重いモジュールはバックグラウンドで読み込み</p>
+        <p id="bg-load-status" style="font-size: 0.75rem; opacity: 0.5; margin-top: 0.4rem;">追加モジュール: 未ロード</p>
         <div class="bg-progress"><div id="bg-load-progress-fill" class="bg-progress-fill"></div></div>
         <div id="bg-load-detail" class="bg-module-list"></div>
     </div>
@@ -1349,48 +1349,48 @@
     <div class="header">
         <h1>ARTEMIS</h1>
         <span id="py-status" style="margin-left: 0.6rem; font-size: 0.75rem; opacity: 0.6; font-weight: 400;">Engine loading…</span>
-        <span id="file-info" style="margin-left: auto; font-size: 0.8rem; opacity: 0.8; font-weight: 500; background: rgba(79, 195, 247, 0.1); padding: 0.3rem 0.8rem; border-radius: 20px;">No data loaded</span>
+        <span id="file-info" style="margin-left: auto; font-size: 0.8rem; opacity: 0.8; font-weight: 500; background: rgba(79, 195, 247, 0.1); padding: 0.3rem 0.8rem; border-radius: 20px;">データ未読込</span>
     </div>
     
     <div class="container">
         <div class="sidebar">
-            <button class="nav-btn active" onclick="showPage('home')" title="Dashboard"><span class="nav-label">Dashboard</span></button>
-            <button class="nav-btn" onclick="showPage('mission')" title="Preprocessing"><span class="nav-label">Preprocessing</span></button>
+            <button class="nav-btn active" onclick="showPage('home')" title="ダッシュボード"><span class="nav-label">ダッシュボード</span></button>
+            <button class="nav-btn" onclick="showPage('mission')" title="前処理"><span class="nav-label">前処理</span></button>
             <div class="nav-divider"></div>
-            <button class="nav-btn" onclick="showPage('atlas')" title="Statistics"><span class="nav-label">Statistics</span></button>
-            <button class="nav-btn" onclick="showPage('core')" title="Logic Classification"><span class="nav-label">Classification</span></button>
-            <button class="nav-btn" onclick="showPage('mega')" title="Text Analysis"><span class="nav-label">Text Analysis</span></button>
-            <button class="nav-btn" onclick="showPage('saturn')" title="Tech Map"><span class="nav-label">Tech Map</span></button>
-            <button class="nav-btn" onclick="showPage('explorer')" title="Keywords"><span class="nav-label">Keywords</span></button>
-            <button class="nav-btn" onclick="showPage('crew')" title="Network"><span class="nav-label">Network</span></button>
-            <button class="nav-btn" onclick="showPage('advanced')" title="Advanced"><span class="nav-label">Advanced</span></button>
+            <button class="nav-btn" onclick="showPage('atlas')" title="統計チャート"><span class="nav-label">統計チャート</span></button>
+            <button class="nav-btn" onclick="showPage('core')" title="論理分類"><span class="nav-label">論理分類</span></button>
+            <button class="nav-btn" onclick="showPage('mega')" title="テキスト分析"><span class="nav-label">テキスト分析</span></button>
+            <button class="nav-btn" onclick="showPage('saturn')" title="技術マップ"><span class="nav-label">技術マップ</span></button>
+            <button class="nav-btn" onclick="showPage('explorer')" title="キーワード"><span class="nav-label">キーワード</span></button>
+            <button class="nav-btn" onclick="showPage('crew')" title="ネットワーク"><span class="nav-label">ネットワーク</span></button>
+            <button class="nav-btn" onclick="showPage('advanced')" title="アドバンスト"><span class="nav-label">アドバンスト</span></button>
             <div class="nav-divider"></div>
-            <button class="nav-btn" onclick="showPage('export')" title="Export"><span class="nav-label">Export</span></button>
+            <button class="nav-btn" onclick="showPage('export')" title="エクスポート"><span class="nav-label">エクスポート</span></button>
             <div class="module-status">
                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem;">
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-core-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">Core</span>
+                        <span style="font-size: 0.55rem;">分析</span>
                     </div>
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-mega-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">Text</span>
+                        <span style="font-size: 0.55rem;">テキスト</span>
                     </div>
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-saturn-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">Map</span>
+                        <span style="font-size: 0.55rem;">マップ</span>
                     </div>
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-explorer-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">KW</span>
+                        <span style="font-size: 0.55rem;">キーワード</span>
                     </div>
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-crew-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">Net</span>
+                        <span style="font-size: 0.55rem;">ネットワーク</span>
                     </div>
                     <div class="module-status-item" style="flex-direction: column; align-items: center; padding: 0.2rem;">
                         <span id="mod-export-status" style="font-size: 0.7rem; color: var(--color-primary);">0%</span>
-                        <span style="font-size: 0.55rem;">Export</span>
+                        <span style="font-size: 0.55rem;">出力</span>
                     </div>
                 </div>
             </div>
@@ -1402,71 +1402,71 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
                     
                     <div class="dashboard-card" style="grid-row: span 2;">
-                        <div class="section-title">Load Data</div>
+                        <div class="section-title">データを読み込む</div>
                         <div id="drop-zone" onclick="document.getElementById('file-input-home').click()">
                             <div class="upload-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 12 15 15"/></svg></div>
-                            <div style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 0.5rem;">Drop CSV file here</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">or click to select</div>
+                            <div style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 0.5rem;">CSVファイルをドロップ</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">また クリックして選択</div>
                             <input type="file" id="file-input-home" accept=".csv" style="display: none;">
                         </div>
                         <div id="home-file-status" style="margin-top: 1rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;"></div>
                         
                         
                         <div style="margin-top: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                            <button class="btn btn-secondary" onclick="showPage('mission')">Settings</button>
-                            <button class="btn" id="home-launch-btn" disabled onclick="quickLaunch()">Start Analysis</button>
+                            <button class="btn btn-secondary" onclick="showPage('mission')">詳細設定</button>
+                            <button class="btn" id="home-launch-btn" disabled onclick="quickLaunch()">分析を開始</button>
                         </div>
                     </div>
                     
                     
                     <div class="dashboard-card">
-                        <div class="section-title">Data Summary</div>
+                        <div class="section-title">データサマリー</div>
                         <div id="home-stats" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
                             <div class="metric hover-lift">
                                 <div class="metric-value" id="home-stat-total">-</div>
-                                <div class="metric-label">Total</div>
+                                <div class="metric-label">総件数</div>
                             </div>
                             <div class="metric hover-lift">
                                 <div class="metric-value" id="home-stat-years">-</div>
-                                <div class="metric-label">Period</div>
+                                <div class="metric-label">期間</div>
                             </div>
                             <div class="metric hover-lift">
                                 <div class="metric-value" id="home-stat-applicants">-</div>
-                                <div class="metric-label">Applicants</div>
+                                <div class="metric-label">出願人</div>
                             </div>
                         </div>
                     </div>
                     
                     
                     <div class="dashboard-card">
-                        <div class="section-title">Quick Access</div>
+                        <div class="section-title">クイックアクセス</div>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem;">
-                            <button class="btn btn-secondary hover-lift" onclick="showPage('atlas'); setAtlasChart('trend');">Show Trend</button>
-                            <button class="btn btn-secondary hover-lift" onclick="showPage('atlas'); setAtlasChart('applicant');">Applicant Ranking</button>
-                            <button class="btn btn-secondary hover-lift" onclick="showPage('mega'); showTab('mega', 'wordcloud');">Word Cloud</button>
-                            <button class="btn btn-secondary hover-lift" onclick="showPage('crew');">Co-occurrence Network</button>
+                            <button class="btn btn-secondary hover-lift" onclick="showPage('atlas'); setAtlasChart('trend');">件数推移を表示</button>
+                            <button class="btn btn-secondary hover-lift" onclick="showPage('atlas'); setAtlasChart('applicant');">出願人ランキング</button>
+                            <button class="btn btn-secondary hover-lift" onclick="showPage('mega'); showTab('mega', 'wordcloud');">ワードクラウド</button>
+                            <button class="btn btn-secondary hover-lift" onclick="showPage('crew');">共起ネットワーク</button>
                         </div>
                     </div>
                 </div>
                 
                 
                 <div class="dashboard-card" style="margin-top: 1.5rem;">
-                    <div class="section-title">Data Analysis Preview</div>
+                    <div class="section-title">データ分析プレビュー</div>
                     <div id="home-preview-container" class="empty-state" style="min-height: 280px;">
                         <div class="empty-state-icon"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M18 9l-5 5-4-4-3 3"/></svg></div>
-                        <div class="empty-state-text">Real-time analysis will appear when data is loaded</div>
+                        <div class="empty-state-text">データを読み込むとリアルタイム分析が表示されます</div>
                     </div>
                     
                     <div id="home-preview-grid" class="hidden" style="display: none;">
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
                             
                             <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem;">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Annual Trend</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">年次推移</div>
                                 <div id="preview-trend" style="height: 140px;"></div>
                             </div>
                             
                             <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem;">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Top Applicants</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Top 出願人</div>
                                 <div style="display: flex; align-items: center; gap: 0.5rem; height: 140px;">
                                     <div id="preview-applicants" style="flex: 0 0 100px; height: 100px;"></div>
                                     <div id="preview-applicants-legend" style="flex: 1; font-size: 0.7rem; overflow: hidden;"></div>
@@ -1476,12 +1476,12 @@
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                             
                             <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem;">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">IPC Distribution</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">IPC分布</div>
                                 <div id="preview-ipc" style="height: 100px;"></div>
                             </div>
                             
                             <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 1rem;">
-                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">Keywords</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 500;">キーワード</div>
                                 <div id="preview-keywords" style="height: 100px; position: relative; overflow: hidden;"></div>
                             </div>
                         </div>
@@ -1492,15 +1492,15 @@
             
             <div id="page-mission" class="page hidden">
                 <div class="card">
-                    <h2>Preprocessing</h2>
+                    <h2>前処理</h2>
                     <div class="tabs">
-                        <button class="tab-btn active" onclick="showTab('mission', 'import')">Import</button>
-                        <button class="tab-btn" onclick="showTab('mission', 'columns')">Column Settings</button>
-                        <button class="tab-btn" onclick="showTab('mission', 'launch')">Launch</button>
+                        <button class="tab-btn active" onclick="showTab('mission', 'import')">インポート</button>
+                        <button class="tab-btn" onclick="showTab('mission', 'columns')">カラム設定</button>
+                        <button class="tab-btn" onclick="showTab('mission', 'launch')">起動</button>
                     </div>
                     
                     <div id="mission-tab-import" class="tab-content active">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.9rem;">Please upload a CSV file.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.9rem;">CSVファイルをアップロードしてください。</p>
                         <input type="file" id="file-input" accept=".csv">
                         <div id="preview-area" style="margin-top: 0.8rem;"></div>
                     </div>
@@ -1508,39 +1508,39 @@
                     <div id="mission-tab-columns" class="tab-content">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Title</label>
-                                <select id="col-title"><option>(Not Selected)</option></select>
+                                <label>タイトル</label>
+                                <select id="col-title"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
-                                <label>Abstract</label>
-                                <select id="col-abstract"><option>(Not Selected)</option></select>
+                                <label>要約</label>
+                                <select id="col-abstract"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
-                                <label>Filing Date</label>
-                                <select id="col-date"><option>(Not Selected)</option></select>
+                                <label>出願日</label>
+                                <select id="col-date"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
-                                <label>Applicant</label>
-                                <select id="col-applicant"><option>(Not Selected)</option></select>
+                                <label>出願人</label>
+                                <select id="col-applicant"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
                                 <label>IPC</label>
-                                <select id="col-ipc"><option>(Not Selected)</option></select>
+                                <select id="col-ipc"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
-                                <label>Inventor</label>
-                                <select id="col-inventor"><option>(Not Selected)</option></select>
+                                <label>発明者</label>
+                                <select id="col-inventor"><option>(未選択)</option></select>
                             </div>
                             <div class="form-group">
-                                <label>Status (for coloring)</label>
-                                <select id="col-status"><option>(Not Selected)</option></select>
+                                <label>ステータス色分け用</label>
+                                <select id="col-status"><option>(未選択)</option></select>
                             </div>
                         </div>
                     </div>
                     
                     <div id="mission-tab-launch" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.9rem;">Launch the analysis engine to run preprocessing.</p>
-                        <button id="btn-launch" class="btn" style="width: 100%;">Launch Analysis Engine</button>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.9rem;">分析エンジンを起動して前処理を実行します。</p>
+                        <button id="btn-launch" class="btn" style="width: 100%;">分析エンジンを起動</button>
                         <div class="progress-bar" style="display: none;" id="launch-progress">
                             <div class="progress-fill" id="launch-progress-fill" style="width: 0%;"></div>
                         </div>
@@ -1552,14 +1552,14 @@
             
             <div id="page-atlas" class="page hidden">
                 <div class="card">
-                    <h2>Statistics</h2>
+                    <h2>統計チャート</h2>
                     <div class="grid-4" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
-                            <label>Start Year</label>
+                            <label>開始年</label>
                             <input type="number" id="year-start" value="2000">
                         </div>
                         <div class="form-group">
-                            <label>End</label>
+                            <label>終了</label>
                             <input type="number" id="year-end" value="2025">
                         </div>
                         <div class="form-group">
@@ -1570,250 +1570,250 @@
                             <label style="visibility: hidden;">_</label>
                             <div class="checkbox-group">
                                 <input type="checkbox" id="use-status-breakdown">
-                                <label for="use-status-breakdown" style="color: #e0e1dd;">Show by status</label>
+                                <label for="use-status-breakdown" style="color: #e0e1dd;">ステータス別を表示</label>
                             </div>
                         </div>
                     </div>
                     <div class="tabs">
-                        <button class="tab-btn active" onclick="setAtlasChart('trend')">Trend</button>
-                        <button class="tab-btn" onclick="setAtlasChart('trend_line')">Line</button>
-                        <button class="tab-btn" onclick="setAtlasChart('applicant')">Applicant</button>
+                        <button class="tab-btn active" onclick="setAtlasChart('trend')">件数推移</button>
+                        <button class="tab-btn" onclick="setAtlasChart('trend_line')">折れ線</button>
+                        <button class="tab-btn" onclick="setAtlasChart('applicant')">出願人</button>
                         <button class="tab-btn" onclick="setAtlasChart('ipc')">IPC</button>
-                        <button class="tab-btn" onclick="setAtlasChart('bubble')">Applicant×Year</button>
-                        <button class="tab-btn" onclick="setAtlasChart('ipc_applicant')">IPC×Applicant</button>
+                        <button class="tab-btn" onclick="setAtlasChart('bubble')">出願人×年</button>
+                        <button class="tab-btn" onclick="setAtlasChart('ipc_applicant')">IPC×出願人</button>
                         <button class="tab-btn" onclick="setAtlasChart('treemap')">Treemap</button>
-                        <button class="tab-btn" onclick="setAtlasChart('lifecycle')">Lifecycle</button>
+                        <button class="tab-btn" onclick="setAtlasChart('lifecycle')">ライフサイクル</button>
                     </div>
                     <div id="atlas-status-toggle-row" class="status-toggle-row"></div>
                     <div id="atlas-control-applicant" class="grid-2" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>Display Count</label>
+                            <label>表示人数</label>
                             <input type="number" id="atlas-applicant-count" value="20" min="1" max="50">
                         </div>
                     </div>
                     <div id="atlas-control-ipc" class="grid-3" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>IPC Level</label>
+                            <label>IPCレベル</label>
                             <select id="atlas-ipc-level">
-                                <option value="1">Subclass (A01B)</option>
-                                <option value="2">Main Group (A01B 1/00)</option>
+                                <option value="1">サブクラス (A01B)</option>
+                                <option value="2">メイングループ (A01B 1/00)</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>IPC Count</label>
+                            <label>表示IPC数</label>
                             <input type="number" id="atlas-ipc-count" value="20" min="1" max="50">
                         </div>
                     </div>
                     <div id="atlas-control-bubble" class="grid-2" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>Display Count</label>
+                            <label>表示人数</label>
                             <input type="number" id="atlas-bubble-count" value="10" min="1" max="30">
                         </div>
                     </div>
                     <div id="atlas-control-ipc-applicant" class="grid-3" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>IPC Level</label>
+                            <label>IPCレベル</label>
                             <select id="atlas-ipcapp-level">
-                                <option value="1">Subclass</option>
-                                <option value="2">Main Group</option>
+                                <option value="1">サブクラス</option>
+                                <option value="2">メイングループ</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>IPC Count (Y-axis)</label>
+                            <label>IPC数 (Y軸)</label>
                             <input type="number" id="atlas-ipcapp-ipc-count" value="15" min="1" max="50">
                         </div>
                         <div class="form-group">
-                            <label>Applicant Count (X-axis)</label>
+                            <label>出願人数 (X軸)</label>
                             <input type="number" id="atlas-ipcapp-app-count" value="15" min="1" max="50">
                         </div>
                     </div>
                     <div id="atlas-control-treemap" class="grid-2" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>Display Mode</label>
+                            <label>表示モード</label>
                             <select id="atlas-treemap-mode">
-                                <option value="ipc">IPC Hierarchy (Technology Area)</option>
-                                <option value="applicant">Applicant Share</option>
+                                <option value="ipc">IPC階層 (技術分野)</option>
+                                <option value="applicant">出願人シェア</option>
                             </select>
                         </div>
                     </div>
                     <div id="atlas-line-controls" class="grid-2" style="margin: 0.5rem 0; display: none;">
                         <div class="form-group">
-                            <label>Display Mode</label>
+                            <label>表示モード</label>
                             <select id="atlas-line-mode">
-                                <option value="overall">Overall Trend</option>
-                                <option value="compare">Compare Applicants</option>
+                                <option value="overall">全体推移</option>
+                                <option value="compare">出願人比較</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Applicants (Max 5)</label>
+                            <label>出願人最大5社</label>
                             <select id="atlas-line-applicants" multiple style="height: 110px;"></select>
                         </div>
                     </div>
-                    <button id="btn-atlas" class="btn" style="margin: 0.5rem 0;">Draw Chart</button>
+                    <button id="btn-atlas" class="btn" style="margin: 0.5rem 0;">チャートを描画</button>
                     <div id="atlas-chart" class="chart-container"></div>
-                    <button class="btn btn-secondary" onclick="saveSnapshot('atlas-chart', 'Statistics Chart')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                    <button class="btn btn-secondary" onclick="saveSnapshot('atlas-chart', '統計チャート')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                 </div>
             </div>
             
             
             <div id="page-core" class="page hidden">
                 <div class="card">
-                    <h2>Logic Classification</h2>
+                    <h2>論理分類</h2>
                     <div class="form-group">
-                        <label>Phase Selection</label>
+                        <label>フェーズ選択</label>
                         <select id="core-phase">
-                            <option value="phase1">Phase 1: AI Assistant (KMeans)</option>
-                            <option value="phase2">Phase 2: Classification Rule Definition</option>
-                            <option value="phase3">Phase 3: Execute Classification</option>
-                            <option value="phase4" selected>Phase 4: Create Patent Map</option>
+                            <option value="phase1">フェーズ 1: AIアシスタント(KMeans)</option>
+                            <option value="phase2">フェーズ 2: 分類ルール定義</option>
+                            <option value="phase3">フェーズ 3: 分類実行</option>
+                            <option value="phase4" selected>フェーズ 4: 特許マップ作成</option>
                         </select>
                     </div>
 
                     <div id="core-phase1" class="core-phase" style="display:none;">
                         <div class="form-group">
-                            <label>Target Column</label>
+                            <label>分析対象カラム</label>
                             <select id="core-ai-target">
-                                <option value="text">Title + Abstract</option>
+                                <option value="text">タイトル+要約</option>
                             </select>
                         </div>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Number of Topics (K)</label>
+                                <label>トピック数 (K)</label>
                                 <input type="number" id="core-ai-k" value="8" min="2" max="20">
                             </div>
                             <div class="form-group">
-                                <label>Sample Size (N)</label>
+                                <label>サンプル数 (N)</label>
                                 <input type="number" id="core-ai-n" value="5" min="1" max="20">
                             </div>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="core-ai-mece" checked>
-                            <label for="core-ai-mece" style="color: #e0e1dd;">MECE Mode (Auto-determine)</label>
+                            <label for="core-ai-mece" style="color: #e0e1dd;">MECEモード（自動決定）</label>
                         </div>
-                        <button class="btn" id="btn-core-ai" style="margin-top:0.5rem;">🧠 Generate AI Assistant Prompt</button>
+                        <button class="btn" id="btn-core-ai" style="margin-top:0.5rem;">🧠 AIアシスタント用プロンプト生成</button>
                         <div id="core-ai-output" style="margin-top:0.8rem;"></div>
                     </div>
 
                     <div id="core-phase2" class="core-phase" style="display:none;">
                         <div class="grid-2" style="margin-bottom:0.6rem;">
                             <div class="form-group">
-                                <label>Axis Name</label>
+                                <label>軸の名称</label>
                                 <select id="core-axis-mode">
-                                    <option value="new">Create New</option>
-                                    <option value="existing" selected>Add to Existing</option>
+                                    <option value="new">新規作</option>
+                                    <option value="existing" selected>既存に追加</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Target Axis</label>
+                                <label>追加/修正先軸</label>
                                 <select id="core-axis-select"></select>
                             </div>
                         </div>
                         <div class="grid-3">
                             <div class="form-group">
-                                <label>New Axis Name</label>
-                                <input type="text" id="core-axis-new" placeholder="e.g., Problem Axis">
+                                <label>新規軸名</label>
+                                <input type="text" id="core-axis-new" placeholder="例: 課題軸">
                             </div>
                             <div class="form-group">
-                                <label>Category Name</label>
-                                <input type="text" id="core-cat-name" placeholder="e.g., Durability Improvement">
+                                <label>分類名</label>
+                                <input type="text" id="core-cat-name" placeholder="例: 耐久性向上">
                             </div>
                             <div class="form-group">
-                                <label>Logic Formula</label>
-                                <input type="text" id="core-cat-rule" placeholder="(durability + life) * improve">
+                                <label>論理式</label>
+                                <input type="text" id="core-cat-rule" placeholder="(耐久 + 寿命) * 向上">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Definition</label>
+                            <label>定義</label>
                             <textarea id="core-cat-def" rows="2"></textarea>
                         </div>
-                        <button class="btn" id="btn-core-add">➕ Add Rule</button>
-                        <button class="btn" id="btn-core-update" style="display:none; margin-left:0.4rem;">✏️ Update Rule</button>
-                        <button class="btn" id="btn-core-cancel" style="display:none; margin-left:0.4rem;">❌ Cancel Edit</button>
+                        <button class="btn" id="btn-core-add">➕ ルールを追加</button>
+                        <button class="btn" id="btn-core-update" style="display:none; margin-left:0.4rem;">✏️ ルールを更新</button>
+                        <button class="btn" id="btn-core-cancel" style="display:none; margin-left:0.4rem;">❌ 編集キャンセル</button>
                         <div id="core-rule-list" style="margin-top:0.8rem;"></div>
                         <div class="form-group">
-                            <label>Bulk JSON Import</label>
-                            <textarea id="core-json" rows="8" placeholder="Paste AI-generated JSON here"></textarea>
+                            <label>JSON一括インポート</label>
+                            <textarea id="core-json" rows="8" placeholder="AIが生成したJSONを貼り付け"></textarea>
                         </div>
-                        <button class="btn" id="btn-core-import">Import JSON</button>
+                        <button class="btn" id="btn-core-import">JSONをインポート</button>
                         <div id="core-rule-status" style="margin-top:0.8rem;"></div>
                     </div>
 
                     <div id="core-phase3" class="core-phase" style="display:none;">
-                        <p style="color:#9fb3c8;">Search target is the combined "Title + Abstract" text.</p>
-                        <button class="btn" id="btn-core-run">▶ Execute All Classifications</button>
+                        <p style="color:#9fb3c8;">探索対象は「タイトル+要約」結合テキストです。</p>
+                        <button class="btn" id="btn-core-run">▶ すべての分類を実行</button>
                         <div id="core-run-status" style="margin-top:0.8rem;"></div>
                         <div id="core-summary" style="margin-top:0.8rem;"></div>
                         <div style="margin-top:0.8rem;">
-                            <label>Classification Results CSV (Copy)</label>
+                            <label>分類結果CSVコピー用</label>
                             <textarea id="core-csv" rows="6" readonly></textarea>
                         </div>
                         <div class="grid-2" style="margin-top:0.8rem;">
                             <div class="form-group">
-                                <label>Axis to Re-analyze</label>
+                                <label>再分析する軸</label>
                                 <select id="core-reanalyze-axis"></select>
                             </div>
                             <div class="form-group">
-                                <label>Number of Topics (K)</label>
+                                <label>抽出トピック数 (K)</label>
                                 <input type="number" id="core-reanalyze-k" value="5" min="1" max="10">
                             </div>
                             <div class="form-group">
-                                <label>Sample Size (N)</label>
+                                <label>サンプル数 (N)</label>
                                 <input type="number" id="core-reanalyze-n" value="3" min="1" max="10">
                             </div>
                         </div>
                         <div class="checkbox-group" style="margin-top:0.4rem;">
                             <input type="checkbox" id="core-reanalyze-mece" checked>
-                            <label for="core-reanalyze-mece" style="color:#e0e1dd;">MECE Mode (Auto-determine)</label>
+                            <label for="core-reanalyze-mece" style="color:#e0e1dd;">MECEモード（自動決定）</label>
                         </div>
-                        <button class="btn" id="btn-core-reanalyze" style="margin-top:0.6rem;">🔁 Re-analyze "Other"</button>
+                        <button class="btn" id="btn-core-reanalyze" style="margin-top:0.6rem;">🔁 『その他』を再分析</button>
                         <div id="core-reanalyze-output" style="margin-top:0.8rem;"></div>
                     </div>
 
                     <div id="core-phase4" class="core-phase">
                         <div class="grid-3">
                             <div class="form-group">
-                                <label>X-Axis</label>
+                                <label>X軸</label>
                                 <select id="core-x-axis"></select>
                             </div>
                             <div class="form-group">
-                                <label>Y-Axis</label>
+                                <label>Y軸</label>
                                 <select id="core-y-axis"></select>
                             </div>
                             <div class="form-group">
-                                <label>Chart Type</label>
+                                <label>グラフタイプ</label>
                                 <select id="core-map-type">
-                                    <option value="heatmap">Heatmap</option>
-                                    <option value="bubble">Bubble Chart</option>
+                                    <option value="heatmap">ヒートマップ</option>
+                                    <option value="bubble">バブルチャート</option>
                                 </select>
                             </div>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="core-exclude-other" checked>
-                            <label for="core-exclude-other" style="color:#e0e1dd;">Exclude "Other"</label>
+                            <label for="core-exclude-other" style="color:#e0e1dd;">「その他」を除外する</label>
                         </div>
-                        <button id="btn-core-map" class="btn">Draw Patent Map</button>
+                        <button id="btn-core-map" class="btn">特許マップを描画</button>
                         <div id="core-map" class="chart-container" style="margin-top:0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('core-map', 'Logic Classification')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('core-map', '論理分類')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                         <hr style="margin:1rem 0; border-color:#2b3a4a;">
                         <div class="form-group">
-                            <label>Search Query (AND, OR, NOT, nearN, adjN supported)</label>
-                            <input type="text" id="core-query" placeholder="e.g., (battery + cell) * (lithium + sodium)">
+                            <label>検索クエリ（AND, OR, NOT, nearN, adjN対応）</label>
+                            <input type="text" id="core-query" placeholder="例: (電池 + セル) * (リチウム + ナトリウム)">
                         </div>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Search Target</label>
+                                <label>検索対象</label>
                                 <select id="core-target">
-                                    <option value="all">Title + Abstract</option>
-                                    <option value="title">Title Only</option>
-                                    <option value="abstract">Abstract Only</option>
+                                    <option value="all">タイトル+要約</option>
+                                    <option value="title">タイトルのみ</option>
+                                    <option value="abstract">要約のみ</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Max Results</label>
+                                <label>最大結果数</label>
                                 <input type="number" id="core-limit" value="100" min="10" max="500">
                             </div>
                         </div>
-                        <button id="btn-core-search" class="btn">Execute Search</button>
+                        <button id="btn-core-search" class="btn">検索を実行</button>
                         <div id="core-results" style="margin-top: 0.8rem;"></div>
                     </div>
                 </div>
@@ -1822,18 +1822,18 @@
             
             <div id="page-saturn" class="page hidden">
                 <div class="card">
-                    <h2>Technology Map</h2>
+                    <h2>技術マップ</h2>
                     <div class="grid-3" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
-                            <label>Number of Clusters</label>
+                            <label>クラスタ数</label>
                             <input type="number" id="n-clusters" value="8" min="3" max="20">
                         </div>
                         <div class="form-group">
-                            <label>Sample Size (0=All)</label>
+                            <label>サンプル数 (0=全件)</label>
                             <input type="number" id="sample-size" value="500" min="0" step="100">
                         </div>
                         <div class="form-group">
-                            <label>Dimension Reduction</label>
+                            <label>次元削減</label>
                             <select id="dim-method">
                                 <option value="pca">PCA</option>
                                 <option value="svd">TruncatedSVD</option>
@@ -1844,21 +1844,21 @@
                     <div class="grid-3" style="margin-bottom: 0.8rem;">
                         <div class="checkbox-group">
                             <input type="checkbox" id="saturn-contour" checked>
-                            <label for="saturn-contour" style="color: #e0e1dd;">Show Contours</label>
+                            <label for="saturn-contour" style="color: #e0e1dd;">等高線表示</label>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="saturn-hull">
-                            <label for="saturn-hull" style="color: #e0e1dd;">Cluster Boundaries</label>
+                            <label for="saturn-hull" style="color: #e0e1dd;">クラスタ境界</label>
                         </div>
                         <div class="checkbox-group">
                             <input type="checkbox" id="saturn-labels" checked>
-                            <label for="saturn-labels" style="color: #e0e1dd;">Show Labels</label>
+                            <label for="saturn-labels" style="color: #e0e1dd;">ラベル表示</label>
                         </div>
                     </div>
-                    <button id="btn-saturn" class="btn" style="width: 100%;">Generate Map</button>
+                    <button id="btn-saturn" class="btn" style="width: 100%;">マップを生成</button>
                     <div id="saturn-status" style="margin-top: 0.5rem;"></div>
                     <div id="saturn-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                    <button class="btn btn-secondary" onclick="saveSnapshot('saturn-chart', 'Technology Map')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                    <button class="btn btn-secondary" onclick="saveSnapshot('saturn-chart', '技術マップ')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     <div id="saturn-summary" style="margin-top: 0.8rem;"></div>
                 </div>
             </div>
@@ -1866,15 +1866,15 @@
             
             <div id="page-explorer" class="page hidden">
                 <div class="card">
-                    <h2>Keyword Analysis</h2>
+                    <h2>キーワード分析</h2>
                     <div class="tabs">
-                        <button class="tab-btn active" onclick="showTab('explorer', 'ranking')">Ranking</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'trend')">Trend</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'compare')">Company Compare</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'heatmap')">Heatmap</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'emerging')">Emerging Words</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'kwic')">KWIC Search</button>
-                        <button class="tab-btn" onclick="showTab('explorer', 'stream')">Stream Graph</button>
+                        <button class="tab-btn active" onclick="showTab('explorer', 'ranking')">ランキング</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'trend')">トレンド</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'compare')">企業比較</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'heatmap')">ヒートマップ</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'emerging')">急上昇ワード</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'kwic')">KWIC検索</button>
+                        <button class="tab-btn" onclick="showTab('explorer', 'stream')">ストリームグラフ</button>
                     </div>
                     
                     <div id="explorer-tab-ranking" class="tab-content active">
@@ -1882,110 +1882,110 @@
                             <label>TOP N</label>
                             <input type="number" id="keyword-top" value="30" min="10" max="100">
                         </div>
-                        <button id="btn-keyword" class="btn">Analyze Ranking</button>
+                        <button id="btn-keyword" class="btn">ランキングを分析</button>
                         <div id="keyword-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('keyword-chart', 'Keyword Ranking')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('keyword-chart', 'キーワードランキング')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="explorer-tab-trend" class="tab-content">
                         <div class="form-group">
-                            <label>Keywords (comma-separated)</label>
-                            <input type="text" id="trend-keywords" placeholder="e.g., AI, machine learning, deep learning">
+                            <label>キーワード（カンマ区切り）</label>
+                            <input type="text" id="trend-keywords" placeholder="例: AI, 機械学習, ディープラーニング">
                         </div>
-                        <button id="btn-trend" class="btn">Analyze Trend</button>
+                        <button id="btn-trend" class="btn">トレンドを分析</button>
                         <div id="trend-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('trend-chart', 'Trend')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('trend-chart', 'トレンド')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="explorer-tab-compare" class="tab-content">
                         <div class="form-group">
-                            <label>Companies/Applicants to Compare</label>
+                            <label>比較する企業・出願人</label>
                             <select id="compare-companies" multiple size="5" style="height: auto;"></select>
                         </div>
-                        <button id="btn-compare" class="btn">Execute Comparison</button>
+                        <button id="btn-compare" class="btn">比較実行</button>
                         <div id="compare-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('compare-chart', 'Company Comparison')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('compare-chart', '企業比較')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="explorer-tab-heatmap" class="tab-content">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Number of Companies</label>
+                                <label>企業数</label>
                                 <input type="number" id="heatmap-companies" value="10" min="5" max="20">
                             </div>
                             <div class="form-group">
-                                <label>Number of Keywords</label>
+                                <label>キーワード数</label>
                                 <input type="number" id="heatmap-keywords" value="15" min="5" max="30">
                             </div>
                         </div>
-                        <button id="btn-heatmap" class="btn">Generate Heatmap</button>
+                        <button id="btn-heatmap" class="btn">ヒートマップを生成</button>
                         <div id="heatmap-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('heatmap-chart', 'Heatmap')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('heatmap-chart', 'ヒートマップ')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="explorer-tab-emerging" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Detect keywords showing rapid growth in the recent period.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">直近期間で急上昇しているキーワードを検出します。</p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Reference Year (years after this are "recent")</label>
+                                <label>基準年（この年以降を「直近」とする）</label>
                                 <input type="number" id="emerging-year" value="2020">
                             </div>
                             <div class="form-group">
-                                <label>Display Count</label>
+                                <label>表示数</label>
                                 <input type="number" id="emerging-top" value="20" min="10" max="50">
                             </div>
                         </div>
-                        <button id="btn-emerging" class="btn">Detect Emerging Words</button>
+                        <button id="btn-emerging" class="btn">急上昇ワードを検出</button>
                         <div id="emerging-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('emerging-chart', 'Emerging Words')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('emerging-chart', '急上昇ワード')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="explorer-tab-kwic" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Check keyword context (KWIC: Keyword in Context)</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">キーワード文脈を確認します（KWIC: Keyword in Context）</p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Search Keyword</label>
-                                <input type="text" id="kwic-keyword" placeholder="e.g., robot">
+                                <label>検索キーワード</label>
+                                <input type="text" id="kwic-keyword" placeholder="例: ロボット">
                             </div>
                             <div class="form-group">
-                                <label>Context Words</label>
+                                <label>前後語数</label>
                                 <input type="number" id="kwic-context" value="30" min="10" max="100">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0.5rem;">
-                            <label>Search Target</label>
+                            <label>検索対象</label>
                             <select id="kwic-target">
-                                <option value="title">Title</option>
-                                <option value="abstract">Abstract</option>
-                                <option value="claims">Claims</option>
+                                <option value="title">発明名称</option>
+                                <option value="abstract">要約</option>
+                                <option value="claims">請求項</option>
                             </select>
                         </div>
-                        <button id="btn-kwic" class="btn">Search KWIC</button>
+                        <button id="btn-kwic" class="btn">KWICを検索</button>
                         <div id="kwic-result" style="margin-top: 0.8rem; max-height: 400px; overflow-y: auto;"></div>
                     </div>
                     
                     
                     <div id="explorer-tab-stream" class="tab-content">
                         <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">
-                            Visualize keyword time-series trends with a beautiful stream graph.
+                            キーワード時系列推移を美しいストリームグラフで可視化します。
                         </p>
                         <div class="grid-2" style="margin-bottom: 0.8rem;">
                             <div class="form-group">
-                                <label>Analysis Type</label>
+                                <label>分析タイプ</label>
                                 <select id="stream-type">
-                                    <option value="keyword">Keyword Trend</option>
-                                    <option value="applicant">Applicant Trend</option>
-                                    <option value="ipc">IPC Trend</option>
+                                    <option value="keyword">キーワード推移</option>
+                                    <option value="applicant">出願人推移</option>
+                                    <option value="ipc">IPC推移</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Display Count</label>
+                                <label>表示数</label>
                                 <input type="number" id="stream-count" value="8" min="3" max="15">
                             </div>
                         </div>
-                        <button id="btn-stream" class="btn">Generate Stream Graph</button>
+                        <button id="btn-stream" class="btn">ストリームグラフを生成</button>
                         <div id="stream-chart" class="chart-container" style="margin-top: 0.8rem; min-height: 450px;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('stream-chart', 'Stream Graph')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('stream-chart', 'ストリームグラフ')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                 </div>
             </div>
@@ -1993,71 +1993,71 @@
             
             <div id="page-crew" class="page hidden">
                 <div class="card">
-                    <h2>Network Analysis</h2>
+                    <h2>ネットワーク分析</h2>
                     <div class="tabs" style="margin-bottom: 0.8rem;">
-                        <button class="tab-btn active" onclick="showTab('crew', 'force')">Force Layout</button>
-                        <button class="tab-btn" onclick="showTab('crew', 'chord')">Chord Diagram</button>
+                        <button class="tab-btn active" onclick="showTab('crew', 'force')">フォースレイアウト</button>
+                        <button class="tab-btn" onclick="showTab('crew', 'chord')">コード図</button>
                     </div>
                     
                     <div id="crew-tab-force" class="tab-content active">
                     <div class="grid-2" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
-                            <label>Network Type</label>
+                            <label>ネットワークタイプ</label>
                             <select id="network-type">
-                                <option value="applicant" selected>Applicant Network</option>
-                                <option value="inventor">Inventor Network</option>
-                                <option value="ipc">IPC Co-occurrence Network</option>
+                                <option value="applicant" selected>出願人ネットワーク</option>
+                                <option value="inventor">発明者ネットワーク</option>
+                                <option value="ipc">IPC共起ネットワーク</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Min Edge Weight</label>
+                            <label>最小エッジ重み</label>
                             <input type="number" id="min-edge" value="2" min="1" max="10">
                         </div>
                     </div>
                     <div class="grid-2" style="margin-bottom: 0.8rem;">
                         <div class="form-group">
-                            <label>Extraction Method</label>
+                            <label>抽出要素</label>
                             <select id="network-centrality">
-                                <option value="degree">Degree Centrality</option>
-                                <option value="betweenness">Betweenness Centrality</option>
-                                <option value="closeness">Closeness Centrality</option>
-                                <option value="eigenvector">Eigenvector Centrality</option>
+                                <option value="degree">次数中心性</option>
+                                <option value="betweenness">媒介中心性</option>
+                                <option value="closeness">近接中心性</option>
+                                <option value="eigenvector">固有ベクトル中心性</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Max Nodes</label>
+                            <label>表示ノード数</label>
                             <input type="number" id="network-max-nodes" value="50" min="10" max="200">
                         </div>
                     </div>
-                    <button id="btn-network" class="btn" style="width: 100%;">Generate Network</button>
+                    <button id="btn-network" class="btn" style="width: 100%;">ネットワークを生成</button>
                     <div id="network-status" style="margin-top: 0.5rem;"></div>
                     <div id="network-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                    <button class="btn btn-secondary" onclick="saveSnapshot('network-chart', 'Network')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                    <button class="btn btn-secondary" onclick="saveSnapshot('network-chart', 'ネットワーク')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     <div id="network-stats" style="margin-top: 0.8rem;"></div>
                     </div>
                     
                     
                     <div id="crew-tab-chord" class="tab-content">
                         <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">
-                            🎵 Visualize co-applicant and inventor relationships with a beautiful Chord Diagram.
+                            🎵 共同出願人・発明者の関係を美しいコード図（Chord Diagram）で可視化します。
                         </p>
                         <div class="grid-2" style="margin-bottom: 0.8rem;">
                             <div class="form-group">
-                                <label>Analysis Type</label>
+                                <label>分析タイプ</label>
                                 <select id="chord-type">
-                                    <option value="ipc" selected>IPC Co-occurrence</option>
-                                    <option value="applicant">Co-applicant Relationship</option>
-                                    <option value="inventor">Inventor Network</option>
+                                    <option value="ipc" selected>IPC共起関係</option>
+                                    <option value="applicant">共同出願人関係</option>
+                                    <option value="inventor">発明者ネットワーク</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Display Count</label>
+                                <label>表示数</label>
                                 <input type="number" id="chord-count" value="15" min="5" max="30">
                             </div>
                         </div>
-                        <button id="btn-chord" class="btn">Generate Chord Diagram</button>
+                        <button id="btn-chord" class="btn">コード図を生成</button>
                         <div id="chord-chart" class="chart-container" style="margin-top: 0.8rem; min-height: 550px;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('chord-chart', 'Chord Diagram')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('chord-chart', 'コード図')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                 </div>
             </div>
@@ -2065,30 +2065,30 @@
             
             <div id="page-mega" class="page hidden">
                 <div class="card">
-                    <h2>Text Analysis</h2>
-                    <div style="margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">TEXT EXTRACTION</div>
+                    <h2>テキスト分析</h2>
+                    <div style="margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">テキスト抽出</div>
                     <div class="tabs" style="margin-bottom: 0.5rem;">
-                        <button class="tab-btn active" onclick="showTab('mega', 'wordcloud')">Word Cloud</button>
+                        <button class="tab-btn active" onclick="showTab('mega', 'wordcloud')">ワードクラウド</button>
                         <button class="tab-btn" onclick="showTab('mega', 'ngram')">N-gram</button>
-                        <button class="tab-btn" onclick="showTab('mega', 'cooccur')">Co-occurrence Network</button>
+                        <button class="tab-btn" onclick="showTab('mega', 'cooccur')">共起ネットワーク</button>
                         <button class="tab-btn" onclick="showTab('mega', 'tfidf')">TF-IDF</button>
                     </div>
-                    <div style="margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">ADVANCED VISUALIZATION</div>
+                    <div style="margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">高度な可視化</div>
                     <div class="tabs">
-                        <button class="tab-btn" onclick="showTab('mega', 'treemap')">Treemap</button>
-                        <button class="tab-btn" onclick="showTab('mega', 'sankey')">Sankey</button>
-                        <button class="tab-btn" onclick="showTab('mega', 'radar')">Radar</button>
-                        <button class="tab-btn" onclick="showTab('mega', 'sunburst')">Sunburst</button>
+                        <button class="tab-btn" onclick="showTab('mega', 'treemap')">ツリーマップ</button>
+                        <button class="tab-btn" onclick="showTab('mega', 'sankey')">サンキー図</button>
+                        <button class="tab-btn" onclick="showTab('mega', 'radar')">レーダー</button>
+                        <button class="tab-btn" onclick="showTab('mega', 'sunburst')">サンバースト</button>
                     </div>
                     
                     <div id="mega-tab-wordcloud" class="tab-content active">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Max Words</label>
+                                <label>最大語数</label>
                                 <input type="number" id="wc-max-words" value="100" min="20" max="200">
                             </div>
                             <div class="form-group">
-                                <label>Color Scheme</label>
+                                <label>カラースキーム</label>
                                 <select id="wc-colorscheme">
                                     <option value="viridis" selected>Viridis</option>
                                     <option value="plasma">Plasma</option>
@@ -2099,18 +2099,18 @@
                                 </select>
                             </div>
                         </div>
-                        <button id="btn-wordcloud" class="btn">Generate Word Cloud</button>
+                        <button id="btn-wordcloud" class="btn">ワードクラウドを生成</button>
                         <div id="wordcloud-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('wordcloud-chart', 'Word Cloud')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('wordcloud-chart', 'ワードクラウド')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="mega-tab-ngram" class="tab-content">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>N-gram Size</label>
+                                <label>N-gramサイズ</label>
                                 <select id="ngram-size">
-                                    <option value="2">Bigram (2 words)</option>
-                                    <option value="3">Trigram (3 words)</option>
+                                    <option value="2">バイグラム (2語)</option>
+                                    <option value="3">トライグラム (3語)</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -2118,153 +2118,153 @@
                                 <input type="number" id="ngram-top" value="25" min="10" max="50">
                             </div>
                         </div>
-                        <button id="btn-ngram" class="btn">Analyze N-gram</button>
+                        <button id="btn-ngram" class="btn">N-gramを分析</button>
                         <div id="ngram-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('ngram-chart', 'N-gram')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('ngram-chart', 'N-gram')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="mega-tab-cooccur" class="tab-content">
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Number of Keywords</label>
+                                <label>キーワード数</label>
                                 <input type="number" id="cooccur-nodes" value="30" min="10" max="50">
                             </div>
                             <div class="form-group">
-                                <label>Min Co-occurrence</label>
+                                <label>最小共起数</label>
                                 <input type="number" id="cooccur-min" value="3" min="1" max="10">
                             </div>
                         </div>
-                        <button id="btn-cooccur" class="btn">Generate Co-occurrence Network</button>
+                        <button id="btn-cooccur" class="btn">共起ネットワークを生成</button>
                         <div id="cooccur-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('cooccur-chart', 'Co-occurrence Network')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('cooccur-chart', '共起ネットワーク')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     <div id="mega-tab-tfidf" class="tab-content">
                         <div class="form-group">
-                            <label>Target Company/Applicant</label>
+                            <label>分析対象企業・出願人</label>
                             <select id="tfidf-company"></select>
                         </div>
-                        <button id="btn-tfidf" class="btn">Extract Key Terms</button>
+                        <button id="btn-tfidf" class="btn">特徴語を抽出</button>
                         <div id="tfidf-result" style="margin-top: 0.8rem;"></div>
                     </div>
                     
                     <div id="mega-tab-strategy" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Analyze applicant growth rate and share, and visualize strategic positions.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">出願人の成長率とシェアを分析し、戦略ポジションを可視化します。</p>
                         <div class="grid-3">
                             <div class="form-group">
-                                <label>Number of Companies</label>
+                                <label>分析対象企業数</label>
                                 <input type="number" id="strategy-companies" value="15" min="5" max="30">
                             </div>
                             <div class="form-group">
-                                <label>Base Year (for AGR)</label>
+                                <label>基準年 (AGR計算用)</label>
                                 <input type="number" id="strategy-base-year" value="2018">
                             </div>
                             <div class="form-group">
-                                <label>Bubble Size</label>
+                                <label>バブルサイズ</label>
                                 <select id="strategy-size">
-                                    <option value="total">Total Applications</option>
-                                    <option value="recent">Recent 3 Years</option>
+                                    <option value="total">総出願件数</option>
+                                    <option value="recent">直近3年件数</option>
                                 </select>
                             </div>
                         </div>
-                        <button id="btn-strategy" class="btn">Analyze Strategy Matrix</button>
+                        <button id="btn-strategy" class="btn">戦略マトリクスを分析</button>
                         <div id="strategy-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('strategy-chart', 'Strategy Matrix')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('strategy-chart', '戦略マトリクス')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                         <div id="strategy-summary" style="margin-top: 0.8rem;"></div>
                     </div>
                     
                     
                     <div id="mega-tab-treemap" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Visualize IPC classification hierarchy as a treemap.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">IPC分類の階層構造をツリーマップで可視化します。</p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Display Level</label>
+                                <label>表示階層</label>
                                 <select id="treemap-level">
-                                    <option value="section">Section (A-H)</option>
-                                    <option value="class" selected>Class (e.g., G06)</option>
-                                    <option value="subclass">Subclass (e.g., G06F)</option>
+                                    <option value="section">セクション (A-H)</option>
+                                    <option value="class" selected>クラス (例: G06)</option>
+                                    <option value="subclass">サブクラス (例: G06F)</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Color Scheme</label>
+                                <label>カラースキーム</label>
                                 <select id="treemap-color">
-                                    <option value="Viridis" selected>Viridis (Green)</option>
-                                    <option value="Sunset">Sunset (Orange)</option>
-                                    <option value="Plasma">Plasma (Purple)</option>
-                                    <option value="Turbo">Turbo (Rainbow)</option>
-                                    <option value="Cividis">Cividis (Yellow)</option>
-                                    <option value="Inferno">Inferno (Warm)</option>
+                                    <option value="Viridis" selected>Viridis (グリーン系)</option>
+                                    <option value="Sunset">Sunset (オレンジ系)</option>
+                                    <option value="Plasma">Plasma (パープル系)</option>
+                                    <option value="Turbo">Turbo (レインボー)</option>
+                                    <option value="Cividis">Cividis (イエロー系)</option>
+                                    <option value="Inferno">Inferno (暖色系)</option>
                                 </select>
                             </div>
                         </div>
-                        <button id="btn-treemap" class="btn">Generate Treemap</button>
+                        <button id="btn-treemap" class="btn">ツリーマップを生成</button>
                         <div id="treemap-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('treemap-chart', 'IPC Treemap')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('treemap-chart', 'IPCツリーマップ')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     
                     <div id="mega-tab-sankey" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Visualize the relationship between applicants and technology fields (IPC/FI) with an interactive Sankey diagram.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">出願人と技術分野（IPC/FI）の関係をインタラクティブなサンキー図で可視化します。</p>
                         <div class="grid-3">
                             <div class="form-group">
-                                <label>Number of Applicants</label>
+                                <label>出願人数</label>
                                 <input type="number" id="sankey-applicants" value="10" min="5" max="20">
                             </div>
                             <div class="form-group">
-                                <label>Number of IPC/FI</label>
+                                <label>IPC/FI数</label>
                                 <input type="number" id="sankey-ipcs" value="10" min="5" max="20">
                             </div>
                             <div class="form-group">
-                                <label>Color Scheme</label>
+                                <label>カラースキーム</label>
                                 <select id="sankey-color">
-                                    <option value="category" selected>By Category</option>
-                                    <option value="gradient">Gradient</option>
+                                    <option value="category" selected>カテゴリ別</option>
+                                    <option value="gradient">グラデーション</option>
                                 </select>
                             </div>
                         </div>
-                        <button id="btn-sankey" class="btn">Generate Sankey Diagram</button>
+                        <button id="btn-sankey" class="btn">サンキー図を生成</button>
                         <div id="sankey-chart" class="chart-container" style="margin-top: 0.8rem; min-height: 500px;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('sankey-chart', 'Sankey Diagram')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('sankey-chart', 'サンキー図')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     
                     <div id="mega-tab-radar" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Compare the technology portfolios of selected companies using a radar chart.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">選択した企業の技術ポートフォリオをレーダーチャートで比較します。</p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Company 1</label>
+                                <label>比較企業1</label>
                                 <select id="radar-company1"></select>
                             </div>
                             <div class="form-group">
-                                <label>Company 2</label>
+                                <label>比較企業2</label>
                                 <select id="radar-company2"></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Comparison Axis (IPC Level)</label>
+                            <label>比較軸 (IPC表示レベル)</label>
                             <select id="radar-axis">
-                                <option value="section">Section (A-H)</option>
-                                <option value="class" selected>Class (TOP10)</option>
+                                <option value="section">セクション (A-H)</option>
+                                <option value="class" selected>クラス (TOP10)</option>
                             </select>
                         </div>
-                        <button id="btn-radar" class="btn">Generate Radar Chart</button>
+                        <button id="btn-radar" class="btn">レーダーチャートを生成</button>
                         <div id="radar-chart" class="chart-container" style="margin-top: 0.8rem;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('radar-chart', 'Radar Chart')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('radar-chart', 'レーダーチャート')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                     
                     
                     <div id="mega-tab-sunburst" class="tab-content">
-                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">Visualize IPC classification hierarchy as a radial sunburst chart. Click to zoom in/out.</p>
+                        <p style="margin-bottom: 0.8rem; font-size: 0.85rem;">IPC分類の階層構造を放射状のサンバースト図で可視化します。クリックでズームイン/アウト。</p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Data Source</label>
+                                <label>データ源</label>
                                 <select id="sunburst-source">
-                                    <option value="ipc" selected>IPC Analysis</option>
-                                    <option value="fi">FI Analysis</option>
+                                    <option value="ipc" selected>IPC分析</option>
+                                    <option value="fi">FI分析</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Color Scheme</label>
+                                <label>カラースキーム</label>
                                 <select id="sunburst-color">
                                     <option value="Spectral" selected>Spectral</option>
                                     <option value="Rainbow">Rainbow</option>
@@ -2273,9 +2273,9 @@
                                 </select>
                             </div>
                         </div>
-                        <button id="btn-sunburst" class="btn">Generate Sunburst</button>
+                        <button id="btn-sunburst" class="btn">サンバーストを生成</button>
                         <div id="sunburst-chart" class="chart-container" style="margin-top: 0.8rem; min-height: 550px;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('sunburst-chart', 'Sunburst')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('sunburst-chart', 'サンバースト')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                 </div>
             </div>
@@ -2283,41 +2283,41 @@
             
             <div id="page-advanced" class="page hidden">
                 <div class="card">
-                    <h2>Advanced Visualization</h2>
+                    <h2>アドバンスド可視化</h2>
                     <p style="margin-bottom: 1rem; color: #4fc3f7; font-size: 0.9rem;">
-                        Interactive visualization features powered by PyScript
+                        PyScriptならではのインタラクティブな可視化機能
                     </p>
                     
                     <div class="tabs">
-                        <button class="tab-btn active" onclick="showTab('nova', 'bubble-race')">Bubble Race</button>
-                        <button class="tab-btn" onclick="showTab('nova', 'circle-pack')">Circle Pack</button>
-                        <button class="tab-btn" onclick="showTab('nova', 'dendro')">Dendrogram</button>
+                        <button class="tab-btn active" onclick="showTab('nova', 'bubble-race')">バブルレース</button>
+                        <button class="tab-btn" onclick="showTab('nova', 'circle-pack')">サークルパック</button>
+                        <button class="tab-btn" onclick="showTab('nova', 'dendro')">デンドログラム</button>
                     </div>
                     
                     
                     <div id="nova-tab-bubble-race" class="tab-content active">
                         <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">
-                            Animate applicant share by year.
+                            年ごとの出願人シェアをアニメーションで再生します。
                         </p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Number of Companies</label>
+                                <label>表示企業数</label>
                                 <input type="number" id="race-companies" value="10" min="5" max="15">
                             </div>
                             <div class="form-group">
-                                <label>Animation Speed</label>
+                                <label>アニメーション速度</label>
                                 <select id="race-speed">
-                                    <option value="slow">Slow (1s/year)</option>
-                                    <option value="normal" selected>Normal (0.5s/year)</option>
-                                    <option value="fast">Fast (0.25s/year)</option>
-                                    <option value="ultra">Ultra Fast (0.1s/year)</option>
+                                    <option value="slow">ゆっくり (1秒/年)</option>
+                                    <option value="normal" selected>普通 (0.5秒/年)</option>
+                                    <option value="fast">高速 (0.25秒/年)</option>
+                                    <option value="ultra">超高速 (0.1秒/年)</option>
                                 </select>
                             </div>
                         </div>
                         <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <button id="btn-race-play" class="btn" onclick="window.bubbleRacePlay()">▶ Play</button>
-                            <button id="btn-race-pause" class="btn btn-secondary" onclick="window.bubbleRacePause()">⏸ Pause</button>
-                            <button id="btn-race-reset" class="btn btn-secondary" onclick="window.bubbleRaceReset()">⏮ Reset</button>
+                            <button id="btn-race-play" class="btn" onclick="window.bubbleRacePlay()">▶再生</button>
+                            <button id="btn-race-pause" class="btn btn-secondary" onclick="window.bubbleRacePause()">⏸一時停止</button>
+                            <button id="btn-race-reset" class="btn btn-secondary" onclick="window.bubbleRaceReset()">⏮リセット</button>
                         </div>
                         <div id="race-year-display" style="text-align: center; font-size: 2rem; font-weight: bold; color: #4fc3f7; margin: 1rem 0;"></div>
                         <div id="race-chart" class="chart-container" style="min-height: 450px;"></div>
@@ -2326,28 +2326,28 @@
                     
                     <div id="nova-tab-circle-pack" class="tab-content">
                         <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">
-                            Display hierarchical data structure interactively. Click to zoom, click again to show case list.
+                            階層的データ構造をインタラクティブに表示します。クリックでズーム、さらにクリックで案件リスト表示。
                         </p>
                         <div class="grid-2">
                             <div class="form-group">
-                                <label>Hierarchy</label>
+                                <label>階層</label>
                                 <select id="circle-hierarchy">
-                                    <option value="applicant-ipc" selected>Applicant → IPC</option>
-                                    <option value="ipc-applicant">IPC → Applicant</option>
-                                    <option value="year-applicant">Year → Applicant</option>
+                                    <option value="applicant-ipc" selected>出願人 →IPC</option>
+                                    <option value="ipc-applicant">IPC →出願人</option>
+                                    <option value="year-applicant">年 →出願人</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Display Count</label>
+                                <label>表示数</label>
                                 <input type="number" id="circle-count" value="8" min="5" max="15">
                             </div>
                         </div>
-                        <button id="btn-circle-pack" class="btn">Generate Circle Pack</button>
+                        <button id="btn-circle-pack" class="btn">サークルパックを生成</button>
                         <div style="display: flex; gap: 1rem; margin-top: 0.8rem;">
                             <div id="circle-chart" class="chart-container" style="flex: 0 0 550px; min-height: 550px;"></div>
                             <div id="circle-detail-panel" style="flex: 1; min-width: 300px; max-height: 550px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; display: none;">
                                 <h4 style="color: #4fc3f7; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem;">
-                                    <span id="circle-detail-title">📋 Case List</span>
+                                    <span id="circle-detail-title">📋 案件リスト</span>
                                     <button onclick="document.getElementById('circle-detail-panel').style.display='none';" style="margin-left: auto; background: none; border: none; color: #888; cursor: pointer; font-size: 1.2rem;">✖</button>
                                 </h4>
                                 <div id="circle-detail-content" style="font-size: 0.85rem;"></div>
@@ -2358,32 +2358,32 @@
                     
                     <div id="nova-tab-dendro" class="tab-content">
                         <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">
-                            🌿 Visualize hierarchical clustering results as a dendrogram (tree diagram).
+                            🌿 階層的クラスタリングの結果をデンドログラム（樹形図）で可視化します。
                         </p>
                         <div class="grid-2" style="margin-bottom: 0.8rem;">
                             <div class="form-group">
-                                <label>Clustering Target</label>
+                                <label>クラスタリング対象</label>
                                 <select id="dendro-target">
-                                    <option value="applicant" selected>Applicant Technology Similarity</option>
-                                    <option value="keyword">Keyword Co-occurrence Pattern</option>
+                                    <option value="applicant" selected>出願人技術類似度</option>
+                                    <option value="keyword">キーワード共起パターン</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label>Display Count</label>
+                                <label>表示数</label>
                                 <input type="number" id="dendro-count" value="20" min="10" max="50">
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0.8rem;">
-                            <label>Distance Method</label>
+                            <label>距離計算方法</label>
                             <select id="dendro-method">
-                                <option value="ward" selected>Ward</option>
-                                <option value="complete">Complete</option>
-                                <option value="average">Average</option>
+                                <option value="ward" selected>Ward法</option>
+                                <option value="complete">Complete法</option>
+                                <option value="average">Average法</option>
                             </select>
                         </div>
-                        <button id="btn-dendro" class="btn">Generate Dendrogram</button>
+                        <button id="btn-dendro" class="btn">デンドログラムを生成</button>
                         <div id="dendro-chart" class="chart-container" style="margin-top: 0.8rem; min-height: 500px;"></div>
-                        <button class="btn btn-secondary" onclick="saveSnapshot('dendro-chart', 'Dendrogram')" style="margin-top: 0.5rem;">Save Snapshot</button>
+                        <button class="btn btn-secondary" onclick="saveSnapshot('dendro-chart', 'デンドログラム')" style="margin-top: 0.5rem;">スナップショットを保存</button>
                     </div>
                 </div>
             </div>
@@ -2391,34 +2391,34 @@
             
             <div id="page-export" class="page hidden">
                 <div class="card">
-                    <h2>Export</h2>
-                    <p style="margin-bottom: 1rem;">Export analysis results and generate reports.</p>
+                    <h2>エクスポート</h2>
+                    <p style="margin-bottom: 1rem;">分析結果をエクスポートしレポートを生成できます。</p>
                     <div class="grid-2">
-                        <button id="btn-export-summary" class="btn">Copy Statistics Summary</button>
-                        <button id="btn-export-keywords" class="btn">Copy Keywords</button>
+                        <button id="btn-export-summary" class="btn">統計サマリーをコピー</button>
+                        <button id="btn-export-keywords" class="btn">キーワードをコピー</button>
                     </div>
                     <div class="grid-2" style="margin-top: 0.5rem;">
-                        <button id="btn-generate-report" class="btn">Generate Report</button>
-                        <button id="btn-export-all" class="btn">Export All Data</button>
+                        <button id="btn-generate-report" class="btn">レポートを生成</button>
+                        <button id="btn-export-all" class="btn">全データをエクスポート</button>
                     </div>
                     <div id="export-result" style="margin-top: 1rem;"></div>
                     
                     <div id="report-output" style="margin-top: 1rem; display: none;">
-                        <h4>📋 Auto-generated Report</h4>
+                        <h4>📋 自動生成レポート</h4>
                         <textarea id="report-text" rows="15" style="width: 100%; background: rgba(0,0,0,0.3); color: #e0e1dd; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; padding: 0.5rem;"></textarea>
-                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('report-text').value); alert('Copied');" style="margin-top: 0.3rem;">📋 Copy Report</button>
+                        <button class="btn btn-secondary" onclick="navigator.clipboard.writeText(document.getElementById('report-text').value); alert('コピーしました');" style="margin-top: 0.3rem;">📋 レポートをコピー</button>
                     </div>
                     
                     <div style="margin-top: 1.5rem;">
-                        <h4>📸 Snapshot Gallery</h4>
-                        <p style="font-size: 0.85rem; color: #888; margin-bottom: 0.5rem;">Save images using the "Save Snapshot" button on charts</p>
+                        <h4>📸 スナップショットギャラリー</h4>
+                        <p style="font-size: 0.85rem; color: #888; margin-bottom: 0.5rem;">チャートの「スナップショット保存」ボタンで画像を保存できます</p>
                         <div id="snapshot-gallery" style="margin-top: 0.5rem;">
-                            <p style="color: #888;">No saved snapshots</p>
+                            <p style="color: #888;">保存されたスナップショットはありません</p>
                         </div>
                     </div>
                     
                     <div style="margin-top: 1.5rem;">
-                        <h4>📋 Data Preview</h4>
+                        <h4>📋 データプレビュー</h4>
                         <div id="data-preview" style="max-height: 300px; overflow-y: auto; margin-top: 0.5rem;"></div>
                     </div>
                 </div>
@@ -2432,17 +2432,17 @@
          * ARTEMIS - JavaScript UI Engine
          * ============================================================================
          * 
-         * Overview:
-         *   UI layer for the patent analysis tool running in the browser.
-         *   Works with Python analysis engine executed by PyScript (Pyodide),
-         *   providing visualization via Plotly.js / D3.js.
+         * 概要:
+         *   ブラウザ上で動作する特許分析ツールのUIレイヤー。
+         *   PyScript (Pyodide) で実行されるPython分析エンジンと連携し、
+         *   Plotly.js / D3.js による可視化を提供する。
          * 
-         * Architecture:
-         *   - State Management: window.appState object
-         *   - Python Integration: window.pyodide_globals / window.pyLoadHeavyPackages
-         *   - Visualization: drawChart(), drawWordCloud(), drawForceNetwork(), etc.
+         * アーキテクチャ:
+         *   - 状態管理: window.appState オブジェクト
+         *   - Python連携: window.pyodide_globals / window.pyLoadHeavyPackages
+         *   - 可視化: drawChart(), drawWordCloud(), drawForceNetwork() など
          * 
-         * Dependencies:
+         * 依存関係:
          *   - Plotly.js 2.27.0
          *   - D3.js v7 + d3-cloud + d3-sankey
          *   - PapaParse 5.4.1
@@ -2452,31 +2452,31 @@
          */
 
         // ============================================================================
-        // Configuration Constants
+        // 設定定数
         // ============================================================================
 
-        /** @const {boolean} Debug mode flag (false in production) */
+        /** @const {boolean} デバッグモードフラグ (本番環境では false) */
         const DEBUG = false;
 
-        /** @const {number} Default toast notification display time (ms) */
+        /** @const {number} トースト通知のデフォルト表示時間 (ms) */
         const TOAST_DURATION_DEFAULT = 3000;
 
-        /** @const {number} Python initialization timeout (seconds) */
+        /** @const {number} Python起動タイムアウト (秒) */
         const PYTHON_INIT_TIMEOUT = 120;
 
-        /** @const {number} Maximum retry count for heavy package loading */
+        /** @const {number} パッケージロード最大リトライ回数 */
         const HEAVY_PACKAGE_MAX_RETRY = 60;
 
         // ============================================================================
-        // Application State
+        // アプリケーション状態
         // ============================================================================
 
-        /** @type {HTMLElement|null} Currently displayed page element */
+        /** @type {HTMLElement|null} 現在表示中のページ要素 */
         let currentPage = null;
 
         /**
-         * Debug log output
-         * @param {...*} args - Values to output
+         * デバッグ用ログ出力
+         * @param {...*} args - 出力する値
          */
         function debugLog(...args) {
             if (!DEBUG) return;
@@ -2487,46 +2487,46 @@
             const elapsed = Math.floor((Date.now() - window.__pyInitStart) / 1000);
             const min = Math.floor(elapsed / 60);
             const sec = elapsed % 60;
-            const timeStr = min > 0 ? `${min}m ${sec}s` : `${sec}s`;
+            const timeStr = min > 0 ? `${min}分${sec}秒` : `${sec}秒`;
             const elapsedEl = document.getElementById('init-elapsed');
-            if (elapsedEl) elapsedEl.textContent = `Elapsed time: ${timeStr}`;
+            if (elapsedEl) elapsedEl.textContent = `経過時間: ${timeStr}`;
             
             const detailEl = document.getElementById('init-detail');
             if (detailEl) {
                 if (elapsed > 120) {
-                    detailEl.textContent = '⚠️ Loading is taking a long time. Please check your network connection.';
+                    detailEl.textContent = '⚠️ 読み込みに時間がかかっています。ネットワーク接続を確認してください。';
                     detailEl.style.color = '#ff6b6b';
                 } else if (elapsed > 60) {
-                    detailEl.textContent = 'Downloading packages... (first time takes longer)';
+                    detailEl.textContent = 'パッケージのダウンロード中... (初回は時間がかかります)';
                     detailEl.style.color = '#ffd93d';
                 } else {
-                    detailEl.textContent = 'Downloading Pyodide + pandas + numpy...';
+                    detailEl.textContent = 'Pyodide + pandas + numpy をダウンロード中...';
                 }
             }
             
             if (elapsed % 10 === 0 && elapsed > 0) {
-                debugLog(`[Init] Python initializing... ${timeStr}`);
+                debugLog(`[Init] Python初期化中... ${timeStr}`);
             }
         }, 1000);
 
         // ============================================================================
-        // Quick Parse (CSV parsing before Python startup)
+        // Quick Parse (Python起動前のCSV解析用)
         // ============================================================================
 
-        /** @type {Object[]|null} Raw CSV data parsed by PapaParse */
+        /** @type {Object[]|null} PapaParse で解析された生CSVデータ */
         window.quickData = null;
 
-        /** @type {string[]} List of CSV column names */
+        /** @type {string[]} CSVのカラム名リスト */
         window.quickColumns = [];
 
-        /** @type {boolean} Whether Quick Parse data is available */
+        /** @type {boolean} Quick Parse データが利用可能か */
         window.quickReady = false;
 
         /**
-         * Application global state
+         * アプリケーションのグローバル状態
          * @type {Object}
-         * @property {string} chartType - Currently selected chart type
-         * @property {Object.<string, boolean>} statusBreakdownByType - Status breakdown flag by chart type
+         * @property {string} chartType - 現在選択中のチャートタイプ
+         * @property {Object.<string, boolean>} statusBreakdownByType - チャートタイプ別のステータス分類フラグ
          */
         window.appState = {
             chartType: 'trend',
@@ -2543,12 +2543,12 @@
         };
 
         // ============================================================================
-        // UI Control Functions
+        // UIコントロール関数
         // ============================================================================
 
         /**
-         * Sync ATLAS page status classification checkbox state
-         * Enable/disable checkbox based on chart type
+         * ATLASページのステータス分類チェックボックスの状態を同期
+         * チャートタイプに応じてチェックボックスの有効/無効を切り替える
          */
         function syncAtlasStatusCheckbox() {
             const checkbox = document.getElementById('use-status-breakdown');
@@ -2596,8 +2596,8 @@
         }
 
         /**
-         * Bind event listeners to ATLAS page input elements
-         * Automatically redraw chart on input change
+         * ATLASページの入力要素にイベントリスナーをバインド
+         * 入力変更時に自動でチャートを再描画する
          */
         function bindAtlasInputs() {
             const btn = document.getElementById('btn-atlas');
@@ -2668,11 +2668,11 @@
         /** @type {boolean} Python環境が準備完了したか */
         window.__pyReady = false;
 
-        /** @type {boolean} Whether Launch button was pressed before Python startup (for deferred execution) */
+        /** @type {boolean} Python起動前にLaunchボタンが押されたか (遅延実行用) */
         window.__pendingLaunch = false;
 
         /**
-         * Set Python environment ready state
+         * Python環境の準備状態を設定
          * @param {boolean} isReady - Python環境が準備完了したか
          */
         function setPyReady(isReady) {
@@ -2681,7 +2681,7 @@
             if (isReady && window.__pyInitTimer) {
                 clearInterval(window.__pyInitTimer);
                 const elapsed = Math.floor((Date.now() - window.__pyInitStart) / 1000);
-                debugLog(`[Init] Python initialization complete ${elapsed}s`);
+                debugLog(`[Init] Python初期化完了 ${elapsed}秒`);
             }
             
             const status = document.getElementById('py-status');
@@ -2712,7 +2712,7 @@
         }
 
         /**
-         * Set heavy packages (scikit-learn, networkx) ready state
+         * 重量パッケージ (scikit-learn, networkx) の準備状態を設定
          * @param {boolean} isReady - パッケージが準備完了したか
          */
         function setHeavyReady(isReady) {
@@ -2723,13 +2723,13 @@
             }
             
             const status = document.getElementById('bg-load-status');
-            if (status && isReady) status.textContent = 'Additional modules: Loading complete';
+            if (status && isReady) status.textContent = '追加モジュール: 読み込み完了';
             
             if (isReady) {
                 updateHeavyProgress('完了', { 'scikit-learn': '完了', 'networkx': '完了' });
             }
             
-            const phaseText = isReady ? 'Ready' : 'Loading';
+            const phaseText = isReady ? '準備完了' : '読み込み中';
             const phasePct = isReady ? 100 : null;
             
             if (!isReady) {
@@ -2771,7 +2771,7 @@
             plan.forEach((item, idx) => {
                 const delay = idx * 700;
                 setTimeout(() => {
-                    updateModuleProgress(item.key, 'Loading', null);
+                    updateModuleProgress(item.key, '読み込み中', null);
                     setTimeout(() => {
                         updateModuleProgress(item.key, '準備完了', 100);
                         item.buttons.forEach(id => {
@@ -2793,7 +2793,7 @@
                 const sec = Math.floor(elapsedSec % 60);
                 elapsed = min > 0 ? ` (${min}分${sec}秒)` : ` (${sec}秒)`;
             }
-            if (status && phaseText) status.textContent = `Additional modules: ${phaseText}${elapsed}`;
+            if (status && phaseText) status.textContent = `追加モジュール: ${phaseText}${elapsed}`;
             const modules = ['scikit-learn', 'networkx'];
             const stateMap = states || {};
             if (detail) {
@@ -2858,15 +2858,15 @@
                 
                 const pyFuncReady = typeof window.pyLoadHeavyPackages === 'function';
                 if (!pyFuncReady) {
-                    if (status) status.textContent = `Waiting for Python startup... (${timeStr})`;
-                    updateHeavyProgress(`Waiting for Python startup (${timeStr})`, { 'scikit-learn': 'Waiting', 'networkx': 'Waiting' });
-                    updateModuleProgress('core', `Waiting for Python startup (${timeStr})`, null);
+                    if (status) status.textContent = `Python起動待機中... (${timeStr})`;
+                    updateHeavyProgress(`Python起動待機中 (${timeStr})`, { 'scikit-learn': '待機中', 'networkx': '待機中' });
+                    updateModuleProgress('core', `Python起動待機中 (${timeStr})`, null);
                 }
             };
             
             window.__heavyElapsedTimer = setInterval(updateElapsed, 1000);
             
-            updateModuleProgress('core', 'Waiting for Python startup', null);
+            updateModuleProgress('core', 'Python起動待機中', null);
             ['mega','saturn','explorer','crew'].forEach(key => {
                 updateModuleProgress(key, '準備中', 0);
             });
@@ -2882,7 +2882,7 @@
                         const min = Math.floor(sec / 60);
                         const s = sec % 60;
                         const timeStr = min > 0 ? `${min}分${s}秒` : `${s}秒`;
-                        if (status) status.textContent = `Loading packages... (${timeStr})`;
+                        if (status) status.textContent = `パッケージ読み込み中... (${timeStr})`;
                     }, 1000);
                     
                     // Python側のパッケージロード関数を呼び出す
@@ -2899,7 +2899,7 @@
                         }, 1000);
                     } else {
                         clearInterval(window.__heavyElapsedTimer);
-                        if (status) status.textContent = 'Additional modules: Timeout - Please reload the page';
+                        if (status) status.textContent = '追加モジュール: タイムアウト - ページを再読み込みしてください';
                         updateHeavyProgress('タイムアウト(Python関数未登録)', { 'scikit-learn': 'エラー', 'networkx': 'エラー' });
                         updateModuleProgress('core', 'タイムアウト', 0);
                     }
@@ -2907,7 +2907,7 @@
             } catch (e) {
                 console.error('[Heavy] Error:', e);
                 clearInterval(window.__heavyElapsedTimer);
-                if (status) status.textContent = `Additional modules: Error`;
+                if (status) status.textContent = `追加モジュール: エラー`;
                 updateHeavyProgress('エラー', { 'scikit-learn': 'エラー', 'networkx': 'エラー' });
                 updateModuleProgress('core', `エラー: ${String(e.message || e).replace(/</g, '&lt;').replace(/>/g, '&gt;')}`, 0);
             }
@@ -2979,23 +2979,23 @@
                         window.quickColumns = res.meta && res.meta.fields ? res.meta.fields : [];
                         window.quickReady = window.quickData.length > 0;
                         const info = document.getElementById('file-info');
-                        if (info) info.textContent = `📂 ${file.name} (${window.quickData.length.toLocaleString()} records)`;
+                        if (info) info.textContent = `📂 ${file.name} (${window.quickData.length.toLocaleString()}件)`;
 
                         const safeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
-                        const cols = ['(Not Selected)', ...window.quickColumns];
+                        const cols = ['(未選択)', ...window.quickColumns];
                         ['col-title','col-abstract','col-date','col-applicant','col-ipc','col-inventor','col-status'].forEach(id => {
                             const sel = document.getElementById(id);
                             if (sel) sel.innerHTML = cols.map(c => `<option value="${safeHtml(c)}">${safeHtml(c)}</option>`).join('');
                         });
 
                         const autoMap = {
-                            'col-title': ['発明名称','Title','title','名称','Invention Title','Patent Title','publication_title'],
-                            'col-abstract': ['要約','Abstract','abstract','要約・抄録','Description','Summary','description'],
-                            'col-date': ['出願日','Date','applicationDate','出願年','Filing Date','filing_date','Application Date','application_date','Priority Date','publication_date'],
-                            'col-applicant': ['出願人','Applicant','applicant','出願人/権利者','Assignee','assignee','Applicant(s)','Owner','Patent Owner','current_assignee'],
-                            'col-ipc': ['IPC','FI','ipc','Fターム','CPC','cpc','Classification','main_ipc','ipc_class'],
-                            'col-inventor': ['発明者','Inventor','inventor','Inventor(s)','inventors'],
-                            'col-status': ['ステータス','Status','status','法的状況','審査状況','Legal Status','legal_status','Patent Status']
+                            'col-title': ['発明名称','Title','title','名称'],
+                            'col-abstract': ['要約','Abstract','abstract','要約・抄録'],
+                            'col-date': ['出願日','Date','applicationDate','出願年'],
+                            'col-applicant': ['出願人','Applicant','applicant','出願人/権利者'],
+                            'col-ipc': ['IPC','FI','ipc','Fターム'],
+                            'col-inventor': ['発明者','Inventor','inventor'],
+                            'col-status': ['IPC','FI','ステータス','Status','status','法的状況','審査状況']
                         };
                         Object.keys(autoMap).forEach(selId => {
                             const sel = document.getElementById(selId);
@@ -3008,7 +3008,7 @@
                         const preview = document.getElementById('preview-area');
                         if (preview) {
                             const head = window.quickColumns.slice(0, 6);
-                            let html = `<div class="status-ok">✅ ${window.quickData.length.toLocaleString()} rows loaded (quick)</div>`;
+                            let html = `<div class="status-ok">✅ ${window.quickData.length.toLocaleString()} 行読み込み完了（簡易）</div>`;
                             html += '<div style="overflow-x: auto; margin-top: 0.5rem;"><table class="data-table"><tr>';
                             head.forEach(c => { html += `<th>${safeHtml(c)}</th>`; });
                             html += '</tr>';
@@ -3047,7 +3047,7 @@
 
         function quickNormalizeStatus(val) {
             const parts = quickSplitList(val);
-            return parts.length ? parts[0] : 'Unset';
+            return parts.length ? parts[0] : '未設定';
         }
 
         function quickStatusMap(statuses) {
@@ -3081,7 +3081,7 @@
 
         function quickDrawAtlas() {
             if (!window.quickReady) {
-                document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">No data available. Available after Python startup</div>';
+                document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">データがありません。Python起動後に利用可能</div>';
                 return;
             }
             const chartType = window.appState.chartType;
@@ -3099,7 +3099,7 @@
             const colStatus = document.getElementById('col-status').value;
 
             if (useStatus && colStatus === '(未選択)') {
-                document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">Status column is not selected</div>';
+                document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">ステータス列が未選択です</div>';
                 return;
             }
 
@@ -3125,7 +3125,7 @@
                         name: st,
                         marker: {color: statusMap[st]}
                     }));
-                    const layout = {title: `Filing Trend (${start}-${end}) - By Status`, barmode:'stack', height: 450};
+                    const layout = {title: `出願件数推移 (${start}-${end}) - ステータス別`, barmode:'stack', height: 450};
                     applyStatusLegend(layout, 80);
                     drawChart('atlas-chart', JSON.stringify(traces), JSON.stringify(layout));
                 } else {
@@ -3133,7 +3133,7 @@
                     rows.forEach(r => { yearCounts[r.year] = (yearCounts[r.year] || 0) + 1; });
                     const years = Object.keys(yearCounts).sort();
                     const counts = years.map(y => yearCounts[y]);
-                    drawChart('atlas-chart', JSON.stringify([{x: years, y: counts, type:'bar', marker:{color:'#4fc3f7'}}]), JSON.stringify({title:`Filing Trend (${start}-${end})`, height:450}));
+                    drawChart('atlas-chart', JSON.stringify([{x: years, y: counts, type:'bar', marker:{color:'#4fc3f7'}}]), JSON.stringify({title:`出願件数推移 (${start}-${end})`, height:450}));
                 }
                 return;
             }
@@ -3159,7 +3159,7 @@
                         x: names.map(n => rows.filter(r => r.status === st && r.applicant_list.includes(n)).length),
                         y: displayNames,
                         customdata: names,
-                        hovertemplate: '%{customdata}<br>%{x} items<extra>%{fullData.name}</extra>',
+                        hovertemplate: '%{customdata}<br>%{x}件<extra>%{fullData.name}</extra>',
                         textposition: 'none',
                         type:'bar',
                         orientation:'h',
@@ -3167,7 +3167,7 @@
                         marker:{color: statusMap[st]}
                     }));
                     const layout = {
-                        title:`Applicant Ranking TOP${applicantCount} - By Status`, 
+                        title:`出願人ランキング TOP${applicantCount} - ステータス別`, 
                         barmode:'stack', 
                         height: Math.max(500, applicantCount * 30 + 100), 
                         margin:{l: leftMargin, b: 100, t: 50},
@@ -3184,14 +3184,14 @@
                         x: top.map(t=>t[1]), 
                         y: displayNames, 
                         customdata: names,
-                        hovertemplate: '%{customdata}<br>%{x} items<extra></extra>',
+                        hovertemplate: '%{customdata}<br>%{x}件<extra></extra>',
                         textposition: 'none',
                         type:'bar', 
                         orientation:'h', 
                         marker:{color:'#81c784'}
                     }];
                     const layout = {
-                        title:`Applicant Ranking TOP${applicantCount}`, 
+                        title:`出願人ランキング TOP${applicantCount}`, 
                         height: Math.max(450, applicantCount*28), 
                         margin:{l: leftMargin}, 
                         yaxis: {categoryorder: 'array', categoryarray: displayNamesReversed, automargin: true}
@@ -3219,16 +3219,16 @@
                         name: st,
                         marker:{color: statusMap[st]}
                     }));
-                    const layout = {title:`IPC Ranking TOP${topN} - By Status`, barmode:'stack', height: Math.max(450, topN*28), margin:{l:120}};
+                    const layout = {title:`IPCランキング TOP${topN} - ステータス別`, barmode:'stack', height: Math.max(450, topN*28), margin:{l:120}};
                     applyStatusLegend(layout, 80);
                     drawChart('atlas-chart', JSON.stringify(traces), JSON.stringify(layout));
                 } else {
-                    drawChart('atlas-chart', JSON.stringify([{x: top.map(t=>t[1]), y: names, type:'bar', orientation:'h', marker:{color:'#ffb74d'}}]), JSON.stringify({title:`IPC Ranking TOP${topN}`, height: Math.max(450, topN*28), margin:{l:120}}));
+                    drawChart('atlas-chart', JSON.stringify([{x: top.map(t=>t[1]), y: names, type:'bar', orientation:'h', marker:{color:'#ffb74d'}}]), JSON.stringify({title:`IPCランキング TOP${topN}`, height: Math.max(450, topN*28), margin:{l:120}}));
                 }
                 return;
             }
 
-            document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">This chart is available after Python startup</div>';
+            document.getElementById('atlas-chart').innerHTML = '<div class="status-warn">このチャートはPython起動後に利用できます</div>';
         }
 
         // ============================================================================
@@ -3359,9 +3359,9 @@
 
         /**
          * ダッシュボードの統計情報を更新
-         * @param {number} total - Total count
+         * @param {number} total - 総件数
          * @param {string} years - 期間 (例: "2000-2024")
-         * @param {number} applicants - Number of applicants
+         * @param {number} applicants - 出願人数
          */
         function updateDashboardStats(total, years, applicants) {
             const elTotal = document.getElementById('home-stat-total');
@@ -3811,9 +3811,9 @@
                         fileInput.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                     updateHomeFileStatus(files[0].name);
-                    showToast('success', `📄 Loaded ${files[0].name}`);
+                    showToast('success', `📄 ${files[0].name} を読み込みました`);
                 } else {
-                    showToast('error', 'Only CSV files are supported');
+                    showToast('error', 'CSVファイルのみ対応しています');
                 }
             });
             
@@ -4588,7 +4588,7 @@
                             .style('font-size', '12px')
                             .style('pointer-events', 'none')
                             .style('z-index', '9999')
-                            .html(`<strong>${d.source.name}</strong> → <strong>${d.target.name}</strong><br/>Count: ${d.value}`)
+                            .html(`<strong>${d.source.name}</strong> → <strong>${d.target.name}</strong><br/>件数: ${d.value}`)
                             .style('left', (event.pageX + 15) + 'px')
                             .style('top', (event.pageY - 10) + 'px');
                     })
@@ -4933,7 +4933,7 @@
                             .style('font-size', '12px')
                             .style('pointer-events', 'none')
                             .style('z-index', '9999')
-                            .html(`<strong>${d.data.name}</strong><br/>Count: ${d.value}`)
+                            .html(`<strong>${d.data.name}</strong><br/>件数: ${d.value}`)
                             .style('left', (event.pageX + 15) + 'px')
                             .style('top', (event.pageY - 10) + 'px');
                     })
@@ -5023,7 +5023,7 @@
             const nodeValue = node.value || 0;
             const nodeName = node.data ? node.data.name : 'Unknown';
             
-            title.innerHTML = `📋 ${nodeName} <span style="font-weight: normal; font-size: 0.85rem;">(${nodeValue} records)</span>`;
+            title.innerHTML = `📋 ${nodeName} <span style="font-weight: normal; font-size: 0.85rem;">(${nodeValue}件)</span>`;
             
             if (window.circlePackPatents && window.circlePackPatents[nodeName]) {
                 const patents = window.circlePackPatents[nodeName];
@@ -5042,7 +5042,7 @@
                 });
                 
                 if (patents.length > 50) {
-                    html += `<div style="color: #888; text-align: center; padding: 0.5rem;">...${patents.length - 50} more records</div>`;
+                    html += `<div style="color: #888; text-align: center; padding: 0.5rem;">...他 ${patents.length - 50} 件</div>`;
                 }
                 html += '</div>';
                 content.innerHTML = html;
@@ -5053,19 +5053,19 @@
                         html += `
                             <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(79, 195, 247, 0.1); padding: 0.4rem 0.6rem; border-radius: 4px;">
                                 <span style="color: #e0e1dd;">${child.data.name}</span>
-                                <span style="color: #4fc3f7; font-weight: bold;">${child.value} records</span>
+                                <span style="color: #4fc3f7; font-weight: bold;">${child.value}件</span>
                             </div>
                         `;
                     });
                     html += '</div>';
-                    html += `<div style="color: #888; font-size: 0.8rem; margin-top: 1rem; text-align: center;">💡 Double-click on lower hierarchy to view individual patents</div>`;
+                    html += `<div style="color: #888; font-size: 0.8rem; margin-top: 1rem; text-align: center;">💡 個別案件を見るには下位階層をダブルクリック</div>`;
                     content.innerHTML = html;
                 } else {
                     content.innerHTML = `
                         <div style="color: #888; text-align: center; padding: 2rem;">
                             <div style="font-size: 2rem; margin-bottom: 0.5rem;">📊</div>
-                            <div>${nodeName}: ${nodeValue} records</div>
-                            <div style="font-size: 0.8rem; margin-top: 0.5rem;">Detailed patent data is retrieved via hierarchy settings</div>
+                            <div>${nodeName}: ${nodeValue}件</div>
+                            <div style="font-size: 0.8rem; margin-top: 0.5rem;">詳細な案件データは階層設定で取得されます</div>
                         </div>
                     `;
                 }
@@ -5158,7 +5158,7 @@
                             .style('font-size', '12px')
                             .style('pointer-events', 'none')
                             .style('z-index', '9999')
-                            .html(`<strong>${d.data.name}</strong><br/>Count: ${d.value}`)
+                            .html(`<strong>${d.data.name}</strong><br/>件数: ${d.value}`)
                             .style('left', (event.pageX + 15) + 'px')
                             .style('top', (event.pageY - 10) + 'px');
                     })
@@ -5200,20 +5200,20 @@
                     .style('fill', '#4fc3f7')
                     .style('font-size', '14px')
                     .style('font-weight', 'bold')
-                    .text('IPC Distribution');
+                    .text('IPC分布');
                 
                 g.append('text')
                     .attr('text-anchor', 'middle')
                     .attr('dy', '1em')
                     .style('fill', '#e0e1dd')
                     .style('font-size', '12px')
-                    .text(`Total: ${root.value}`);
+                    .text(`全${root.value}件`);
                 
                 debugLog(`[drawSunburst] Rendered ${root.descendants().length} nodes`);
                 
             } catch(e) {
                 console.error('Sunburst error:', e);
-                container.innerHTML = '<div class="status-err">Sunburst error: ' + (e.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
+                container.innerHTML = '<div class="status-err">サンバーストエラー: ' + (e.message || '').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</div>';
             }
         }
 
@@ -5355,7 +5355,7 @@
                             .style('font-size', '12px')
                             .style('pointer-events', 'none')
                             .style('z-index', '9999')
-                            .html(`<strong>${names[d.source.index]}</strong> ↔ <strong>${names[d.target.index]}</strong><br/>Co-occurrence: ${d.source.value} items`)
+                            .html(`<strong>${names[d.source.index]}</strong> ↔ <strong>${names[d.target.index]}</strong><br/>共起: ${d.source.value}件`)
                             .style('left', (event.pageX + 15) + 'px')
                             .style('top', (event.pageY - 10) + 'px');
                     })
@@ -5783,7 +5783,7 @@
                 if (!window.__pyReady) {
                     window.__pendingLaunch = true;
                     const status = document.getElementById('launch-status');
-                    if (status) status.innerHTML = '<div class="status-warn">Python is starting. Analysis engine will launch automatically after startup.</div>';
+                    if (status) status.innerHTML = '<div class="status-warn">Python起動中です。起動後に自動で分析エンジンを開始します。</div>';
                 }
             });
         }
@@ -5849,42 +5849,41 @@
     <script type="py" config='{"packages": ["pandas", "numpy"]}'>
 """
 ================================================================================
-ARTEMIS - Python Analysis Engine
+ARTEMIS - Python分析エンジン
 ================================================================================
 
-Overview:
-    Core logic for patent analysis running in browser via 
-    PyScript (Pyodide WebAssembly runtime).
+概要:
+    PyScript (Pyodide WebAssemblyランタイム) でブラウザ上で実行される
+    特許分析のコアロジック。
+アーキテクチャ:
+    - コアパッケージ (pandas, numpy) は即座に読み込み
+    - 重量パッケージ (scikit-learn, networkx) は非同期で読み込み
+    - 全ての可視化はJavaScript連携でPlotly.jsを使用
 
-Architecture:
-    - Core packages (pandas, numpy) load immediately
-    - Heavy packages (scikit-learn, networkx) load asynchronously
-    - All visualizations use Plotly.js via JavaScript integration
+モジュール:
+    - ATLAS: 統計チャート(トレンド、棒、ツリーマップ等)
+    - COR: ルールベース分析エンジン (AND/OR/NEAR/ADJ演算子対応
+    - Saturn V: TF-IDF + PCA/t-SNEランドスケープ可視化
+    - Explorer: キーワード分析と共起ネットワーク
+    - CREW: 発明者・出願人ネットワーク分析
+    - MEGA: テキスト分析(ワードクラウド、N-gram、TF-IDF)
 
-Modules:
-    - ATLAS: Statistical charts (trend, bar, treemap, etc.)
-    - COR: Rule-based analysis engine (AND/OR/NEAR/ADJ operators)
-    - Saturn V: TF-IDF + PCA/t-SNE landscape visualization
-    - Explorer: Keyword analysis and co-occurrence network
-    - CREW: Inventor/Applicant network analysis
-    - MEGA: Text analysis (word cloud, N-gram, TF-IDF)
-
-Global Variables:
-    g_df: Raw DataFrame loaded from CSV
-    g_df_processed: DataFrame with parsed fields
-    g_col_map: Column mapping settings
-    g_core_rules: CORE classification rules
+グローバル変数:
+    g_df: CSVから読み込んだ生DataFrame
+    g_df_processed: フィールド解析済みのDataFrame
+    g_col_map: カラムマッピング設定
+    g_core_rules: CORE分類ルール
 
 ================================================================================
 """
 
-# Suppress known Pyodide warnings
+# Pyodideの既知の警告を抑制
 import warnings
 warnings.filterwarnings('ignore', message='libc not found')
 warnings.filterwarnings('ignore', category=RuntimeWarning)
 
 # ============================================================
-# Standard Library Imports
+# 標準ライブラリインポート
 # ============================================================
 import re
 import json
@@ -5893,50 +5892,50 @@ import unicodedata
 import functools
 from collections import Counter
 
-# HTML escape helper function
+# HTMLエスケープ用のヘルパー関数
 def escape_html(text):
-    """Perform HTML escaping (wrapper for html.escape)"""
+    """HTMLエスケープを行う（html.escapeのラッパー）"""
     return html.escape(str(text))
 
 # ============================================================
-# Data Processing Libraries
+# データ処理ライブラリ
 # ============================================================
 import pandas as pd
 import numpy as np
 
 # ============================================================
-# PyScript/Pyodide Integration
+# PyScript/Pyodide連携
 # ============================================================
 from js import document, console, window
 from pyodide.ffi import create_proxy
 import asyncio
 
-# Debug log function (wraps JavaScript debugLog function)
+# デバッグログ関数（JavaScriptのdebugLog関数をラップ）
 PY_DEBUG = False
 
 def debugLog(*args):
-    """Output debug log to console"""
+    """コンソールにデバッグログを出力"""
     if not PY_DEBUG:
         return
     message = ' '.join(str(arg) for arg in args)
     console.log(message)
 
-# References to JavaScript functions (accessed via window)
+# JavaScript関数への参照（window経由でアクセス）
 def drawChart(divId, dataJson, layoutJson):
-    """Draw chart with Plotly.js"""
+    """Plotly.jsでチャートを描画"""
     window.drawChart(divId, dataJson, layoutJson)
 
 def updateProgress(percent):
-    """Update progress bar"""
+    """進捗バーを更新"""
     if hasattr(window, 'updateProgress'):
         window.updateProgress(percent)
 
 # ============================================================
 # ============================================================
-# Lazy-loaded heavy packages (scikit-learn, networkx)
+# 遅延読み込みの重量パッケージ (scikit-learn, networkx)
 # ============================================================
 
-# Loaded asynchronously via micropip, so initial values are None
+# micropip経由で非同期に読み込まれるため、初期値はNone
 TfidfVectorizer = None
 PCA = None
 TruncatedSVD = None
@@ -6834,15 +6833,15 @@ async def on_file_change(event):
                 opts = ''.join(f'<option value="{escape_html(str(c))}">{escape_html(str(c))}</option>' for c in cols)
                 sel.innerHTML = opts
         
-        # Auto-map columns based on common naming patterns (International support)
+        # Auto-map columns based on common naming patterns
         auto_map = {
-            'col-title': ['発明名称', 'Title', 'title', '名称', 'Invention Title', 'Patent Title', 'publication_title'],
-            'col-abstract': ['要約', 'Abstract', 'abstract', '要約・抄録', 'Description', 'Summary', 'description'],
-            'col-date': ['出願日', 'Date', 'applicationDate', '出願年', 'Filing Date', 'filing_date', 'Application Date', 'application_date', 'Priority Date', 'publication_date'],
-            'col-applicant': ['出願人', 'Applicant', 'applicant', '出願人/権利者', 'Assignee', 'assignee', 'Applicant(s)', 'Owner', 'Patent Owner', 'current_assignee'],
-            'col-ipc': ['IPC', 'FI', 'ipc', 'Fターム', 'CPC', 'cpc', 'Classification', 'main_ipc', 'ipc_class'],
-            'col-inventor': ['発明者', 'Inventor', 'inventor', 'Inventor(s)', 'inventors'],
-            'col-status': ['ステータス', 'Status', 'status', '法的状況', '審査状況', 'Legal Status', 'legal_status', 'Patent Status']
+            'col-title': ['発明名称', 'Title', 'title', '名称'],
+            'col-abstract': ['要約', 'Abstract', 'abstract', '要約・抄録'],
+            'col-date': ['出願日', 'Date', 'applicationDate', '出願年'],
+            'col-applicant': ['出願人', 'Applicant', 'applicant', '出願人/権利者'],
+            'col-ipc': ['IPC', 'FI', 'ipc', 'Fターム'],
+            'col-inventor': ['発明者', 'Inventor', 'inventor'],
+            'col-status': ['IPC', 'FI', 'ステータス', 'Status', 'status', '法的状況', '審査状況']
         }
         
         for sel_id, keywords in auto_map.items():
@@ -6856,13 +6855,13 @@ async def on_file_change(event):
                     continue
                 break
         
-        document.getElementById('file-info').textContent = f'📂 {file.name} ({len(df):,} records)'
+        document.getElementById('file-info').textContent = f'📂 {file.name} ({len(df):,}件)'
         
     except Exception as e:
         document.getElementById('preview-area').innerHTML = f'<div class="status-err">❌{escape_html(str(e))}</div>'
 
 # ============================================================
-# Analysis Engine Initialization
+# 分析エンジン初期化
 # ============================================================
 
 def launch_engine(event):
@@ -7122,7 +7121,7 @@ def launch_engine(event):
                 for i in top_indices
             }
         
-        # Send all preview data
+        # すべてのプレビューデータをまとめて送信
         preview_data = {
             'yearCounts': year_counts_js,
             'topApplicants': top_applicant_js,
@@ -7131,25 +7130,25 @@ def launch_engine(event):
         }
         window.updateDashboardPreview(json.dumps(preview_data))
         
-        # Toast notification
-        window.showToast(f'Analysis engine started: {len(df):,} records processed', 'success', 4000)
+        # トースト通知
+        window.showToast(f'分析エンジン起動完了 {len(df):,}件のデータを処理しました', 'success', 4000)
         
         # Display completion status
         status_info = (
-            f"Status: {len(status_colors)} types"
-            if status_colors else "Status: Not set"
+            f"ステータス: {len(status_colors)}種類"
+            if status_colors else "ステータス: 未設定"
         )
         tfidf_info = f"{tfidf_matrix.nnz:,}" if tfidf_matrix is not None else "-"
         vocab_info = f"{len(feature_names):,}" if feature_names else "-"
         status.innerHTML = f'''
-            <div class="status-ok" style="font-size: 1.1rem;">🎉 Analysis Engine Ready</div>
+            <div class="status-ok" style="font-size: 1.1rem;">🎉 分析エンジン起動完了</div>
             <div class="metrics">
-                <div class="metric"><div class="metric-value">{len(df):,}</div><div class="metric-label">Total Records</div></div>
-                <div class="metric"><div class="metric-value">{vocab_info}</div><div class="metric-label">Vocabulary</div></div>
-                <div class="metric"><div class="metric-value">{tfidf_info}</div><div class="metric-label">Non-zero Elements</div></div>
+                <div class="metric"><div class="metric-value">{len(df):,}</div><div class="metric-label">総件数</div></div>
+                <div class="metric"><div class="metric-value">{vocab_info}</div><div class="metric-label">語彙数</div></div>
+                <div class="metric"><div class="metric-value">{tfidf_info}</div><div class="metric-label">非ゼロ要素</div></div>
             </div>
             <div style="font-size: 0.85rem; margin-top: 0.5rem; color: #778da9;">{status_info}</div>
-            <div style="font-size: 0.8rem; margin-top: 0.3rem; color: #9fb3c8;">Heavy features will start in background</div>
+            <div style="font-size: 0.8rem; margin-top: 0.3rem; color: #9fb3c8;">重い機能はバックグラウンドで起動します</div>
         '''
         
     except Exception as e:
@@ -7260,9 +7259,9 @@ def draw_atlas(event):
                         color=status_colors.get(str(status), "#4fc3f7")
                     ))
                 layout = ChartHelper.create_stacked_bar_layout(
-                    title=f"Filing Trend ({start}-{end}) - By Status",
-                    x_title="Filing Year",
-                    y_title="Count"
+                    title=f"出願件数推移 ({start}-{end}) - ステータス別",
+                    x_title="出願年",
+                    y_title="件数"
                 )
             else:
                 cnt = dff['year'].value_counts().sort_index()
@@ -7273,9 +7272,9 @@ def draw_atlas(event):
                     color=COLOR_SEQUENCE[0]
                 )]
                 layout = ChartHelper.create_layout(
-                    title=f"Filing Trend ({start}-{end})",
-                    xaxis={"title": "Filing Year"},
-                    yaxis={"title": "Count"}
+                    title=f"出願件数推移 ({start}-{end})",
+                    xaxis={"title": "出願年"},
+                    yaxis={"title": "件数"}
                 )
             ChartHelper.draw("atlas-chart", traces, layout)
         

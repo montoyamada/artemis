@@ -1,6 +1,6 @@
 # 🛰️ ARTEMIS - Browser-Based Patent Analysis Tool
 
-[�🇧 English](README.md) | [🇯🇵 日本語](README.ja.md)
+[English](README.md) | [日本語](README.ja.md)
 
 ---
 

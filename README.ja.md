@@ -28,13 +28,13 @@
 
 **今すぐ試せます！** インストール不要でブラウザから直接利用できます：
 
-👉 **[ARTEMIS オンライン版](https://ipscience.github.io/artemis/artemis.html)**
+👉 **[ARTEMIS オンライン版](https://ipscience.github.io/artemis/artemis_ja.html)**
 
 > ブラウザで開くだけですぐに特許分析を開始できます。CSVファイルをドラッグ＆ドロップしてお試しください。
 
 ## 🚀 クイックスタート
 
-1. `artemis.html`をブラウザで開く
+1. `artemis_ja.html`をブラウザで開く
 2. CSVファイルをドラッグ＆ドロップまたはアップロード
 3. カラムマッピングを設定（自動検出対応）
 4. 分析エンジンを起動
